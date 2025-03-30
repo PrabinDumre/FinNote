@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const hbs = require("hbs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const MongoStore = require('connect-mongo');
 require("./db/conn");
 const Register = require("./models/registers");
 const Note = require("./models/notes"); 
@@ -53,6 +54,12 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        ttl: 24 * 60 * 60, // Session TTL (1 day)
+        autoRemove: 'native',
+        touchAfter: 24 * 3600 // Only update the session once per day unless changed
+    }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
@@ -179,11 +186,25 @@ app.post("/signup", async (req, res) => {
     try {
         const { username, email, password, otp } = req.body;
 
+        // Debug logs for OTP verification
+        console.log('Signup attempt with:', { email, providedOTP: otp });
+        console.log('Session OTP data:', req.session.signupOTP);
+
         // Verify OTP
         if (!req.session.signupOTP || 
             req.session.signupOTP.email !== email || 
             req.session.signupOTP.otp !== otp || 
             Date.now() > req.session.signupOTP.otpExpiry) {
+            
+            // Detailed debug logs for OTP mismatch
+            console.log('OTP verification failed:');
+            console.log('- Session OTP exists:', !!req.session.signupOTP);
+            if (req.session.signupOTP) {
+                console.log('- Email match:', req.session.signupOTP.email === email);
+                console.log('- OTP match:', req.session.signupOTP.otp === otp);
+                console.log('- OTP expiry valid:', Date.now() <= req.session.signupOTP.otpExpiry);
+            }
+            
             req.session.message = { text: "Invalid or expired OTP. Please try again.", type: "error" };
             return res.redirect("/signup");
         }
@@ -913,11 +934,25 @@ app.use('/api/user', userRoutes); // Register user routes
 app.post("/verify-otp", async (req, res) => {
     try {
         const { email, otp } = req.body;
+        
+        // Debug logs
+        console.log('Verify OTP attempt:', { email, providedOTP: otp });
+        console.log('Session OTP data:', req.session.signupOTP);
 
         if (!req.session.signupOTP || 
             req.session.signupOTP.email !== email || 
             req.session.signupOTP.otp !== otp || 
             Date.now() > req.session.signupOTP.otpExpiry) {
+            
+            // Detailed debug logs
+            console.log('OTP verification failed in verify-otp:');
+            console.log('- Session OTP exists:', !!req.session.signupOTP);
+            if (req.session.signupOTP) {
+                console.log('- Email match:', req.session.signupOTP.email === email);
+                console.log('- OTP match:', req.session.signupOTP.otp === otp);
+                console.log('- OTP expiry valid:', Date.now() <= req.session.signupOTP.otpExpiry);
+            }
+            
             return res.json({ 
                 success: false, 
                 message: "Invalid or expired OTP"
