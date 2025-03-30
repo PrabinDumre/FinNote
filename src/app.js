@@ -78,12 +78,28 @@ console.log("Session config:", {
 
 // Global middleware to set username for all routes
 app.use((req, res, next) => {
+    // Skip logging for static file requests to reduce noise
+    if (!req.path.startsWith('/css/') && !req.path.startsWith('/js/') && !req.path.startsWith('/images/')) {
+        console.log(`Request to ${req.method} ${req.path} with sessionID: ${req.sessionID}`);
+    }
+    
     if (req.session.userId) {
         res.locals.username = req.session.username || "Budget Buddy";
         res.locals.isLoggedIn = true;
+        
+        // Only log for non-static routes
+        if (!req.path.startsWith('/css/') && !req.path.startsWith('/js/') && !req.path.startsWith('/images/')) {
+            console.log(`Authenticated request for user: ${res.locals.username} (${req.session.userId})`);
+        }
     } else {
         res.locals.username = "";
         res.locals.isLoggedIn = false;
+        
+        // Only log for important routes
+        if (req.path !== '/' && req.path !== '/favicon.ico' && 
+            !req.path.startsWith('/css/') && !req.path.startsWith('/js/') && !req.path.startsWith('/images/')) {
+            console.log(`Unauthenticated request to ${req.path}`);
+        }
     }
     next();
 });
@@ -269,27 +285,48 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
+        
+        console.log('Login attempt for:', email);
+        
         const user = await Register.findOne({ email });
 
         if (!user) {
+            console.log('User not found:', email);
             req.session.message = { text: "User not found. Please sign up first!", type: "error" };
             return res.redirect("/");
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            console.log('Incorrect password for user:', email);
             req.session.message = { text: "Incorrect password! Please try again.", type: "error" };
             return res.redirect("/");
         }
 
+        // Set session data
         req.session.userId = user._id;
         req.session.email = user.email;
         req.session.username = user.name;
         req.session.currency = user.currency;
         req.session.dateFormat = user.dateFormat;
         req.session.theme = user.theme || "light";
+        
+        console.log('Login successful for:', email);
+        console.log('Session data set:', {
+            userId: req.session.userId,
+            username: req.session.username
+        });
 
-        res.redirect("/dashboard");
+        // Explicitly save the session before redirecting
+        req.session.save((err) => {
+            if (err) {
+                console.error('Error saving session after login:', err);
+                req.session.message = { text: "Error during login. Please try again.", type: "error" };
+                return res.redirect("/");
+            }
+            console.log('Session saved successfully, redirecting to dashboard');
+            res.redirect("/dashboard");
+        });
     } catch (error) {
         console.error("Login error:", error);
         req.session.message = { text: "Server error. Please try again.", type: "error" };
@@ -422,16 +459,26 @@ app.post("/reset-password/:token", async (req, res) => {
 
 // Dashboard Page (Protected Route)
 app.get("/dashboard", async (req, res) => {
+    console.log('Dashboard request with session:', {
+        userId: req.session.userId,
+        username: req.session.username || 'not set',
+        sessionID: req.sessionID
+    });
+    
     if (!req.session.userId) {
-        req.session.message = "Please log in first!";
+        console.log('No userId in session, redirecting to login');
+        req.session.message = { text: "Please log in first!", type: "error" };
         return res.redirect("/");
     }
+    
     try {
         // Fetch user's notes
         const notes = await Note.find({ userId: req.session.userId })
             .sort({ createdAt: -1 })
             .limit(5); // Get only the 5 most recent notes
 
+        console.log('Rendering dashboard for user:', req.session.username);
+        
         // Render dashboard with notes data
         res.render("dashboard", {
             username: req.session.username,
