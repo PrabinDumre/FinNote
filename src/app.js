@@ -53,7 +53,7 @@ hbs.registerHelper("formatDate", function (date) {
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI,
         ttl: 24 * 60 * 60, // Session TTL (1 day)
@@ -63,9 +63,18 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'lax'
     }
 }));
+
+// Log session configuration
+console.log("Session config:", {
+    sessionSecret: process.env.SESSION_SECRET ? "Set" : "Using default",
+    nodeEnv: process.env.NODE_ENV || "development",
+    secureCookie: process.env.NODE_ENV === 'production',
+    mongoUrl: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + "..." : "Not set"
+});
 
 // Global middleware to set username for all routes
 app.use((req, res, next) => {
@@ -124,6 +133,7 @@ app.post("/send-otp", async (req, res) => {
         console.log('Attempting to send OTP to:', email); // Debug log
         console.log('Using EMAIL_USER:', process.env.EMAIL_USER); // Debug log
         console.log('OTP generated:', otp); // Debug log
+        console.log('Session ID:', req.sessionID); // Log the session ID
 
         // Configure email transporter
         const transporter = nodemailer.createTransport({
@@ -165,7 +175,19 @@ app.post("/send-otp", async (req, res) => {
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.response); // Debug log
 
-        res.json({ success: true, message: "OTP sent successfully" });
+        // Explicitly save the session before responding
+        req.session.save((err) => {
+            if (err) {
+                console.error("Error saving session:", err);
+                return res.json({ 
+                    success: false, 
+                    message: "Failed to save OTP session. Please try again." 
+                });
+            }
+            
+            // After session is saved, send the response
+            res.json({ success: true, message: "OTP sent successfully" });
+        });
     } catch (error) {
         console.error("Detailed error in sending OTP:", {
             message: error.message,
@@ -188,6 +210,8 @@ app.post("/signup", async (req, res) => {
 
         // Debug logs for OTP verification
         console.log('Signup attempt with:', { email, providedOTP: otp });
+        console.log('Session ID during signup:', req.sessionID);
+        console.log('Full session data:', req.session);
         console.log('Session OTP data:', req.session.signupOTP);
 
         // Verify OTP
@@ -234,7 +258,14 @@ app.post("/signup", async (req, res) => {
         delete req.session.signupOTP;
         
         req.session.message = { text: "Signup successful! Please log in.", type: "success" };
-        res.redirect("/");
+        
+        // Save session before redirecting
+        req.session.save((err) => {
+            if (err) {
+                console.error("Error saving session after signup:", err);
+            }
+            res.redirect("/");
+        });
     } catch (error) {
         console.error("Signup error:", error);
         req.session.message = { text: "Error signing up. Please try again.", type: "error" };
@@ -937,6 +968,8 @@ app.post("/verify-otp", async (req, res) => {
         
         // Debug logs
         console.log('Verify OTP attempt:', { email, providedOTP: otp });
+        console.log('Session ID during verification:', req.sessionID);
+        console.log('Session data:', req.session);
         console.log('Session OTP data:', req.session.signupOTP);
 
         if (!req.session.signupOTP || 
@@ -959,9 +992,16 @@ app.post("/verify-otp", async (req, res) => {
             });
         }
 
-        res.json({ 
-            success: true, 
-            message: "OTP verified successfully"
+        // If we reach here, OTP is valid
+        // Let's also save the session to update the last access time
+        req.session.save((err) => {
+            if (err) {
+                console.error("Error saving session after OTP verify:", err);
+            }
+            res.json({ 
+                success: true, 
+                message: "OTP verified successfully"
+            });
         });
     } catch (error) {
         console.error("OTP verification error:", error);
@@ -1010,6 +1050,30 @@ app.get("/visuals-and-charts", (req, res) => {
     }
     res.render("visuals-and-charts", {
         username: req.session.username
+    });
+});
+
+// Test session storage - add this before starting the server
+app.get("/test-session", (req, res) => {
+    if (!req.session.views) {
+        req.session.views = 1;
+        console.log("Creating new session:", req.sessionID);
+    } else {
+        req.session.views++;
+        console.log("Existing session found:", req.sessionID, "Views:", req.session.views);
+    }
+    
+    // Save the session explicitly
+    req.session.save((err) => {
+        if (err) {
+            console.error("Error saving session:", err);
+            return res.status(500).json({ error: "Session save error" });
+        }
+        res.json({ 
+            sessionID: req.sessionID,
+            views: req.session.views,
+            message: "Session test - refresh to increment counter"
+        });
     });
 });
 
