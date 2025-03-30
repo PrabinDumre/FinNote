@@ -114,7 +114,7 @@ app.post("/send-otp", async (req, res) => {
         }
 
         // Check if email already exists
-        const existingUser = await Register.findOne({ email });
+        let existingUser = await Register.findOne({ email });
         if (existingUser) {
             return res.json({ success: false, message: "Email already exists! Please log in." });
         }
@@ -123,17 +123,30 @@ app.post("/send-otp", async (req, res) => {
         const otp = generateOTP();
         const otpExpiry = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
 
-        // Store OTP in session
-        req.session.signupOTP = {
-            email,
-            otp,
-            otpExpiry
-        };
+        // Store OTP in database for temporary use
+        let tempUser = await Register.findOne({ email, isEmailVerified: false });
+        if (!tempUser) {
+            // Create a temporary user entry to store OTP
+            tempUser = new Register({
+                name: "Temporary User",
+                email: email,
+                password: "temporary", // This will be overwritten during actual signup
+                otp: otp,
+                otpExpiry: new Date(otpExpiry),
+                isEmailVerified: false
+            });
+        } else {
+            // Update existing temporary user with new OTP
+            tempUser.otp = otp;
+            tempUser.otpExpiry = new Date(otpExpiry);
+        }
+        
+        await tempUser.save();
 
         console.log('Attempting to send OTP to:', email); // Debug log
         console.log('Using EMAIL_USER:', process.env.EMAIL_USER); // Debug log
         console.log('OTP generated:', otp); // Debug log
-        console.log('Session ID:', req.sessionID); // Log the session ID
+        console.log('Storing OTP in database for:', email);
 
         // Configure email transporter
         const transporter = nodemailer.createTransport({
@@ -175,19 +188,7 @@ app.post("/send-otp", async (req, res) => {
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.response); // Debug log
 
-        // Explicitly save the session before responding
-        req.session.save((err) => {
-            if (err) {
-                console.error("Error saving session:", err);
-                return res.json({ 
-                    success: false, 
-                    message: "Failed to save OTP session. Please try again." 
-                });
-            }
-            
-            // After session is saved, send the response
-            res.json({ success: true, message: "OTP sent successfully" });
-        });
+        res.json({ success: true, message: "OTP sent successfully" });
     } catch (error) {
         console.error("Detailed error in sending OTP:", {
             message: error.message,
@@ -210,62 +211,53 @@ app.post("/signup", async (req, res) => {
 
         // Debug logs for OTP verification
         console.log('Signup attempt with:', { email, providedOTP: otp });
-        console.log('Session ID during signup:', req.sessionID);
-        console.log('Full session data:', req.session);
-        console.log('Session OTP data:', req.session.signupOTP);
 
-        // Verify OTP
-        if (!req.session.signupOTP || 
-            req.session.signupOTP.email !== email || 
-            req.session.signupOTP.otp !== otp || 
-            Date.now() > req.session.signupOTP.otpExpiry) {
-            
+        // Verify OTP from database
+        const tempUser = await Register.findOne({ 
+            email: email,
+            otp: otp,
+            otpExpiry: { $gt: new Date() },
+            isEmailVerified: false
+        });
+
+        if (!tempUser) {
             // Detailed debug logs for OTP mismatch
-            console.log('OTP verification failed:');
-            console.log('- Session OTP exists:', !!req.session.signupOTP);
-            if (req.session.signupOTP) {
-                console.log('- Email match:', req.session.signupOTP.email === email);
-                console.log('- OTP match:', req.session.signupOTP.otp === otp);
-                console.log('- OTP expiry valid:', Date.now() <= req.session.signupOTP.otpExpiry);
-            }
-            
+            console.log('OTP verification failed during signup for:', email);
             req.session.message = { text: "Invalid or expired OTP. Please try again.", type: "error" };
             return res.redirect("/signup");
         }
 
-        // Check if email already exists
-        const existingUser = await Register.findOne({ email });
-        if (existingUser) {
+        // Check if email already exists in a verified account
+        const existingVerifiedUser = await Register.findOne({ 
+            email: email, 
+            isEmailVerified: true 
+        });
+        
+        if (existingVerifiedUser) {
             req.session.message = { text: "Email already exists! Please log in.", type: "error" };
             return res.redirect("/");
         }
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new Register({
-            name: username,
-            email: email,
-            password: hashedPassword,
-            currency: "INR",
-            dateFormat: "DD/MM/YYYY",
-            isEmailVerified: true,
-            theme: "light"
-        });
 
-        await newUser.save();
+        // Update the temporary user to be a permanent user
+        tempUser.name = username;
+        tempUser.password = hashedPassword;
+        tempUser.isEmailVerified = true;
+        tempUser.currency = "INR";
+        tempUser.dateFormat = "DD/MM/YYYY";
+        tempUser.theme = "light";
         
-        // Clear OTP from session
-        delete req.session.signupOTP;
+        // Clear OTP data
+        tempUser.otp = undefined;
+        tempUser.otpExpiry = undefined;
         
+        await tempUser.save();
+        
+        console.log('User successfully registered:', email);
         req.session.message = { text: "Signup successful! Please log in.", type: "success" };
-        
-        // Save session before redirecting
-        req.session.save((err) => {
-            if (err) {
-                console.error("Error saving session after signup:", err);
-            }
-            res.redirect("/");
-        });
+        res.redirect("/");
     } catch (error) {
         console.error("Signup error:", error);
         req.session.message = { text: "Error signing up. Please try again.", type: "error" };
@@ -968,40 +960,27 @@ app.post("/verify-otp", async (req, res) => {
         
         // Debug logs
         console.log('Verify OTP attempt:', { email, providedOTP: otp });
-        console.log('Session ID during verification:', req.sessionID);
-        console.log('Session data:', req.session);
-        console.log('Session OTP data:', req.session.signupOTP);
 
-        if (!req.session.signupOTP || 
-            req.session.signupOTP.email !== email || 
-            req.session.signupOTP.otp !== otp || 
-            Date.now() > req.session.signupOTP.otpExpiry) {
-            
-            // Detailed debug logs
-            console.log('OTP verification failed in verify-otp:');
-            console.log('- Session OTP exists:', !!req.session.signupOTP);
-            if (req.session.signupOTP) {
-                console.log('- Email match:', req.session.signupOTP.email === email);
-                console.log('- OTP match:', req.session.signupOTP.otp === otp);
-                console.log('- OTP expiry valid:', Date.now() <= req.session.signupOTP.otpExpiry);
-            }
-            
+        // Check database for the OTP
+        const tempUser = await Register.findOne({ 
+            email: email,
+            otp: otp,
+            otpExpiry: { $gt: new Date() },
+            isEmailVerified: false
+        });
+
+        if (!tempUser) {
+            console.log('OTP verification failed: Invalid or expired OTP for', email);
             return res.json({ 
                 success: false, 
                 message: "Invalid or expired OTP"
             });
         }
 
-        // If we reach here, OTP is valid
-        // Let's also save the session to update the last access time
-        req.session.save((err) => {
-            if (err) {
-                console.error("Error saving session after OTP verify:", err);
-            }
-            res.json({ 
-                success: true, 
-                message: "OTP verified successfully"
-            });
+        console.log('OTP verified successfully for:', email);
+        res.json({ 
+            success: true, 
+            message: "OTP verified successfully"
         });
     } catch (error) {
         console.error("OTP verification error:", error);
