@@ -18,6 +18,9 @@ const Transaction = require("./models/transaction");
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Trust proxy - important for session handling behind load balancers like on Render
+app.set('trust proxy', 1);
+
 // Import routes
 const transactionRoutes = require('./routes/transaction');
 const reminderRoutes = require('./routes/reminderRoutes');
@@ -61,18 +64,21 @@ app.use(session({
         touchAfter: 24 * 3600 // Only update the session once per day unless changed
     }),
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        // In production (on Render), trust the proxy to handle secure cookies
+        secure: false, // Set to false to avoid issues with Render's proxy handling
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: 'lax'
-    }
+        sameSite: 'lax',
+        path: '/'
+    },
+    proxy: true // Trust the reverse proxy (needed for Render)
 }));
 
 // Log session configuration
 console.log("Session config:", {
     sessionSecret: process.env.SESSION_SECRET ? "Set" : "Using default",
     nodeEnv: process.env.NODE_ENV || "development",
-    secureCookie: process.env.NODE_ENV === 'production',
+    cookieSecure: false, // Show that we're not using secure cookies
     mongoUrl: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + "..." : "Not set"
 });
 
