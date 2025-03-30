@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Additional styling for progress rings */
+        .progress-ring-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .progress-ring-circle-bg {
+            stroke: rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-text {
+            font-size: 16px;
+            font-weight: 700;
+            fill: #2c3e50;
+        }
+        
+        /* Improved readability for alerts */
+        .category-alert {
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-alert .alert-message {
+            color: #2c3e50;
+            font-weight: 600;
+            text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+        <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link active">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <div class="dashboard-container">
+                <!-- Top Navigation Bar -->
+                <nav class="top-nav">
+                    <div class="search-container">
+                        <span id="timestamp" style="color: #666; font-size: 16px; padding: 10px 20px;"></span>
+                        
+                        <!-- Login notification popup -->
+                        <div id="loginNotification" class="login-notification">
+                            <div class="notification-content">
+                                <span id="notificationMessage"></span>
+                            </div>
+                            <div class="notification-progress">
+                                <div class="progress-bar-indicator"></div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Feature Cards and Expense Summary Row -->
+                    <div class="content-wrapper">
+                        <!-- Feature Cards -->
+                        <div class="feature-cards">
+                            <a href="/expense" class="feature-card expenses">
+                                <div class="card-icon">📊</div>
+                                <div class="card-content">
+                                    <h2>Expense Management</h2>
+                                    <p>Track your expenses, split bills, and manage balances.</p>
+                                </div>
+                            </a>
+
+                            <a href="/notes" class="feature-card notes">
+                                <div class="card-icon">📝</div>
+                                <div class="card-content">
+                                    <h2>Notes</h2>
+                                    <p>Capture and organize your thoughts effortlessly.</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Replace the weekly report section with this new category carousel -->
+                        <div class="budget-insights-box">
+                            <h2 class="insights-title">Budget Insights</h2>
+                            
+                            <div class="category-carousel">
+                                <div class="carousel-indicators" id="carouselIndicators">
+                                    <!-- Will be populated with dots -->
+                                </div>
+                                
+                                <div class="category-slides" id="categorySlides">
+                                    <!-- Will be populated with category slides -->
+                                </div>
+                            </div>
+                            
+                            <!-- AI insights message now appears above the budget status message -->
+                            <div id="aiInsightsMessage" class="ai-insights-message">
+                                <span class="ai-icon">🤖</span> <span class="prediction-text">Welcome to Budget Insights! I'll provide smart predictions about your spending patterns and budget status.</span>
+                            </div>
+                            
+                            <!-- Budget status message box -->
+                            <div id="budgetStatusMessage" class="budget-status-message">
+                                <!-- Will be populated dynamically with budget status messages -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inspirational Quote Section -->
+                    <div class="quote-container">
+                        <div class="quote-icon">💫</div>
+                        <div class="quote-text">
+                            <p>"Money comes and goes, but what you do with it shapes your journey."</p>
+                            <p class="quote-subtext">Track it, save it, and spend where it matters.</p>
+                        </div>
+                        <div class="quote-decoration">
+                            <span class="decoration-icon">💰</span>
+                            <span class="decoration-icon">📈</span>
+                            <span class="decoration-icon">🎯</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        // Update timestamp every second
+        function updateTimestamp() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('timestamp').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+
+        // Initialize daily expenses chart
+        const dailyCtx = document.getElementById('dailyExpensesChart').getContext('2d');
+        window.dailyExpensesChart = new Chart(dailyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    {
+                        label: 'Given',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: '#2ecc71',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Taken',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: '#e74c3c',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'This Week\'s Daily Expenses',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 8,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (₹)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

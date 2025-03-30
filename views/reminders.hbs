@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminders - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/reminders.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+         <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="searchReminders" placeholder="Search reminders">
+                <button class="search-icon">🔍</button>
+            </div>
+
+            <!-- Reminder Categories -->
+            <div class="reminder-categories">
+                <button class="category-btn active">All</button>
+                <button class="category-btn">Today</button>
+                <button class="category-btn">Upcoming</button>
+                <button class="category-btn">Completed</button>
+            </div>
+
+            <!-- Reminders Grid -->
+            <div class="reminders-grid" id="remindersGrid">
+                <!-- Reminders will be populated by JavaScript -->
+            </div>
+
+            <!-- Add Reminder Button -->
+            <button class="add-reminder-btn">+</button>
+
+            <!-- Add Reminder Modal -->
+            <div class="modal" id="addReminderModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add New Reminder</h2>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <form id="addReminderForm">
+                        <div class="form-group">
+                            <label for="reminderTitle">Title</label>
+                            <input type="text" id="reminderTitle" placeholder="e.g., Electricity Bill Due" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderType">Type</label>
+                            <select id="reminderType" required>
+                                <option value="Bill Payment">Bill Payment</option>
+                                <option value="Loan Repayment">Loan Repayment</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Task">Task</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderDate">Due Date & Time</label>
+                            <input type="datetime-local" id="reminderDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderAmount">Amount (Optional)</label>
+                            <div class="amount-input">
+                                <span class="currency">₹</span>
+                                <input type="number" id="reminderAmount" placeholder="Enter amount">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderDescription">Notes (Optional)</label>
+                            <textarea id="reminderDescription" rows="4" placeholder="Add any additional details"></textarea>
+                        </div>
+                        <div class="form-group notification-toggle">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableNotification" checked>
+                                Enable reminder notification
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderPriority">Priority</label>
+                            <select id="reminderPriority" required>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <button type="submit" class="save-btn">Save Reminder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/reminders.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html> 

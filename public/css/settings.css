@@ -1,0 +1,273 @@
+/* Settings Page Styles */
+.settings-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.settings-content h1 {
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Settings Section */
+.settings-section {
+    margin-bottom: 40px;
+}
+
+.settings-section h2 {
+    color: #46997D;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.settings-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Profile Settings */
+.profile-settings {
+    display: flex;
+    gap: 30px;
+    align-items: start;
+}
+
+.avatar-section {
+    text-align: center;
+}
+
+.avatar-preview {
+    width: 100px;
+    height: 100px;
+    background: #f1f1f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.change-avatar-btn {
+    background: #46997D;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.change-avatar-btn:hover {
+    background: #3a7d66;
+}
+
+.profile-form {
+    flex: 1;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Setting Items */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-info h3 {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.setting-info p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #46997D;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Select Styles */
+.currency-select,
+.date-format-select {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: white;
+}
+
+/* Buttons */
+.export-btn,
+.clear-data-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.export-btn {
+    background: #46997D;
+    color: white;
+}
+
+.export-btn:hover {
+    background: #3a7d66;
+}
+
+.clear-data-btn {
+    background: #ff4757;
+    color: white;
+}
+
+.clear-data-btn:hover {
+    background: #ff6b81;
+}
+
+.danger-zone {
+    color: #ff4757;
+}
+
+/* Save Button */
+.save-settings {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.save-btn {
+    background: #46997D;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+    background: #3a7d66;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .settings-content {
+        padding: 20px;
+    }
+
+    .profile-settings {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-form {
+        width: 100%;
+    }
+
+    .setting-item {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+} 
+
+/* Logout Button Centering */
+.logout-box {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.logout-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #ff6b81;
+    transform: translateY(-2px);
+}

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/notes.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar (Same as other pages) -->
+         <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="searchNotes" placeholder="Search for notes">
+                <button class="search-icon">🔍</button>
+            </div>
+
+            <!-- Date Scroll -->
+            <div class="date-scroll">
+                <div class="date-container" id="dateContainer">
+                    <!-- Dates will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="notes-grid">
+                {{#if notes.length}}
+                    {{#each notes}}
+                        <div class="note-card {{#if this.isPinned}}pinned{{/if}} {{this.noteType}}-note" data-note-id="{{this._id}}">
+                            <div class="note-header">
+                                <h3>{{this.title}}</h3>
+                                <div class="note-actions">
+                                    <button class="three-dots-btn">⋮</button>
+                                    <div class="dropdown-content">
+                                        <button class="edit-note" data-id="{{this._id}}">
+                                            <span class="icon">✏️</span> Edit
+                                        </button>
+                                        <button class="pin-note" data-id="{{this._id}}">
+                                            <span class="icon">📌</span> {{#if this.isPinned}}Unpin{{else}}Pin{{/if}}
+                                        </button>
+                                        <button class="view-details" data-id="{{this._id}}">
+                                            <span class="icon">ℹ️</span> Details
+                                        </button>
+                                        <button class="delete-note" data-id="{{this._id}}">
+                                            <span class="icon">🗑️</span> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="note-content">
+                                {{#if (eq this.noteType "text")}}
+                                    <p class="text-content">{{this.content}}</p>
+                                {{else if (eq this.noteType "list")}}
+                                    <ul class="list-content">
+                                        {{#each this.content}}
+                                            <li>{{this}}</li>
+                                        {{/each}}
+                                    </ul>
+                                {{else if (eq this.noteType "image")}}
+                                    <div class="image-container">
+                                        <img src="{{this.image}}" alt="Note image">
+                                        {{#if this.content}}
+                                            <p class="image-description">{{this.content}}</p>
+                                        {{/if}}
+                                    </div>
+                                {{/if}}
+                            </div>
+                            {{#if this.type}}
+                            <div class="note-footer">
+                                <span class="note-type">{{this.type}}</span>
+                            </div>
+                            {{/if}}
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <div class="no-notes">
+                        <p>No notes yet. Click the + button to create your first note!</p>
+                    </div>
+                {{/if}}
+            </div>
+
+            <!-- Add Note Button -->
+            <button class="add-note-btn">+</button>
+
+            <!-- Note Type Selector (Initially Hidden) -->
+            <div class="note-type-selector" id="noteTypeSelector">
+                <button class="type-option" data-type="text">
+                    <span class="icon">📝</span>
+                    <span>Text Note</span>
+                </button>
+                <button class="type-option" data-type="list">
+                    <span class="icon">📋</span>
+                    <span>List</span>
+                </button>
+                <button class="type-option" data-type="image">
+                    <span class="icon">🖼️</span>
+                    <span>Image Note</span>
+                </button>
+            </div>
+
+            <!-- Text Note Modal -->
+            <div class="modal" id="textNoteModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add Text Note</h2>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <form id="textNoteForm">
+                        <div class="form-group">
+                            <label for="textNoteType">Note Type</label>
+                            <select id="textNoteType" onchange="handleNoteTypeChange(this, 'textCustomType')" required>
+                                <option value="Important">Important</option>
+                                <option value="Lecture Notes">Lecture Notes</option>
+                                <option value="Grocery">Grocery</option>
+                                <option value="To-do List">To-do List</option>
+                                <option value="Shopping List">Shopping List</option>
+                                <option value="Routine">Routine</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <input type="text" id="textCustomType" placeholder="Enter custom note type" style="display: none; margin-top: 10px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="textNoteTitle">Title</label>
+                            <input type="text" id="textNoteTitle" placeholder="Enter note title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="textDescription">Description</label>
+                            <textarea id="textDescription" rows="6" placeholder="Enter your note here..." required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <button type="submit" class="save-btn">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Note Modal -->
+            <div class="modal" id="listNoteModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add List Note</h2>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <form id="listNoteForm">
+                        <div class="form-group">
+                            <label for="listNoteType">Note Type</label>
+                            <select id="listNoteType" onchange="handleNoteTypeChange(this, 'listCustomType')" required>
+                                <option value="Important">Important</option>
+                                <option value="Lecture Notes">Lecture Notes</option>
+                                <option value="Grocery">Grocery</option>
+                                <option value="To-do List">To-do List</option>
+                                <option value="Shopping List">Shopping List</option>
+                                <option value="Routine">Routine</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <input type="text" id="listCustomType" placeholder="Enter custom note type" style="display: none; margin-top: 10px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="listNoteTitle">Title</label>
+                            <input type="text" id="listNoteTitle" placeholder="Enter note title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>List Style</label>
+                            <div class="list-style-options">
+                                <label>
+                                    <input type="radio" name="listStyle" value="bullet" checked>
+                                    Bullet List
+                                </label>
+                                <label>
+                                    <input type="radio" name="listStyle" value="number">
+                                    Number List
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div id="listItems">
+                                <div class="list-item">
+                                    <span class="list-marker">•</span>
+                                    <input type="text" class="item-text" placeholder="List item">
+                                    <button type="button" class="remove-item">×</button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-list-item">+ Add item</button>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <button type="submit" class="save-btn">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Image Note Modal -->
+            <div class="modal" id="imageNoteModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add Image Note</h2>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <form id="imageNoteForm">
+                        <div class="form-group">
+                            <label for="imageNoteType">Note Type</label>
+                            <select id="imageNoteType" onchange="handleNoteTypeChange(this, 'imageCustomType')" required>
+                                <option value="Important">Important</option>
+                                <option value="Lecture Notes">Lecture Notes</option>
+                                <option value="Grocery">Grocery</option>
+                                <option value="To-do List">To-do List</option>
+                                <option value="Shopping List">Shopping List</option>
+                                <option value="Routine">Routine</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <input type="text" id="imageCustomType" placeholder="Enter custom note type" style="display: none; margin-top: 10px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="imageNoteTitle">Title</label>
+                            <input type="text" id="imageNoteTitle" placeholder="Enter note title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageUpload">Upload Image</label>
+                            <div class="image-upload-container">
+                                <input type="file" id="imageUpload" accept="image/*" required>
+                                <div class="image-preview" id="imagePreview"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageDescription">Description</label>
+                            <textarea id="imageDescription" rows="4" placeholder="Add description for your image..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <button type="submit" class="save-btn">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/notes.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html> 

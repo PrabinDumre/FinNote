@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/about.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+         <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+        <!-- Main Container -->
+        <div class="main-container">
+            <div class="about-content">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="logo-container">
+                        <div class="logo">
+                            <svg width="80" height="80" viewBox="0 0 517 499" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+                                    <g filter="url(#filter0_d_178_12)">
+                                    <g filter="url(#filter1_i_178_12)">
+                                    <rect x="0.501465" y="196.376" width="396.132" height="347.29" rx="60" transform="rotate(-29.6939 0.501465 196.376)" fill="white"/>
+                                    </g>
+                                    <g filter="url(#filter2_i_178_12)">
+                                    <rect x="0.501465" y="196.376" width="396.132" height="347.29" rx="60" transform="rotate(-29.6939 0.501465 196.376)" fill="url(#paint0_linear_178_12)"/>
+                                    </g>
+                                    <rect x="1.18349" y="196.563" width="395.132" height="346.29" rx="59.5" transform="rotate(-29.6939 1.18349 196.563)" stroke="black"/>
+                                    <g clip-path="url(#clip0_178_12)">
+                                    <path d="M192.126 425.917L452.818 277.258L334.904 70.4812L74.2121 219.141L192.126 425.917ZM321.936 108.322L371.048 194.445L411.516 265.41L202.962 384.338L162.494 313.373L113.383 227.25L321.936 108.322Z" fill="#46997D"/>
+                                    <g clip-path="url(#clip1_178_12)">
+                                    <path d="M261.892 240.159L275.812 232.221L271.954 225.454L263.999 229.99L262.07 226.607L254.116 231.143L256.141 234.696C253.963 236.491 252.48 238.882 251.98 241.405C251.481 243.927 252.001 246.402 253.438 248.347C254.876 250.293 257.13 251.571 259.761 251.933C262.393 252.295 265.215 251.716 267.68 250.308L271.657 248.04C272.184 247.739 272.792 247.629 273.346 247.734C273.899 247.838 274.354 248.149 274.61 248.598C274.866 249.046 274.902 249.596 274.71 250.126C274.518 250.656 274.113 251.122 273.586 251.423L259.666 259.361L263.524 266.128L271.479 261.591L273.408 264.975L281.362 260.439L279.337 256.886C281.515 255.091 282.998 252.7 283.497 250.177C283.997 247.654 283.477 245.18 282.039 243.235C280.602 241.289 278.348 240.011 275.717 239.649C273.085 239.286 270.263 239.866 267.798 241.274L263.821 243.542C263.294 243.843 262.686 243.953 262.132 243.848C261.579 243.744 261.124 243.433 260.868 242.984C260.612 242.536 260.576 241.986 260.768 241.456C260.96 240.926 261.364 240.459 261.892 240.159Z" fill="black"/>
+                                    <path d="M309.678 208.425L301.644 213.007C300.005 210.399 297.751 208.207 295.02 206.566C292.289 204.924 289.139 203.869 285.767 203.464L278.335 190.432C277.977 189.804 277.42 189.306 276.727 188.993C276.034 188.68 275.232 188.564 274.411 188.66C273.59 188.756 272.783 189.059 272.079 189.535C271.376 190.011 270.804 190.641 270.428 191.355L260.983 209.294L242.421 219.879C220.507 232.376 211.037 252.306 218.29 269.506L218.083 269.624C217.028 270.226 215.813 270.446 214.705 270.237C213.598 270.028 212.688 269.406 212.176 268.509L208.318 261.743L200.364 266.279L204.222 273.045C205.76 275.734 208.489 277.597 211.811 278.224C215.133 278.851 218.776 278.192 221.941 276.39L222.22 276.231C225.326 280.339 229.46 283.651 234.341 285.942C239.221 288.232 244.733 289.446 250.5 289.501L257.143 301.149C257.654 302.047 258.564 302.668 259.672 302.877C260.779 303.087 261.994 302.866 263.049 302.265L278.958 293.193C280.013 292.591 280.821 291.658 281.205 290.598C281.589 289.538 281.518 288.439 281.006 287.541L277.147 280.775L289.079 273.971L292.938 280.737C293.449 281.635 294.359 282.256 295.467 282.465C296.574 282.674 297.789 282.454 298.844 281.852L314.753 272.78C315.808 272.179 316.616 271.246 317 270.186C317.384 269.126 317.313 268.027 316.801 267.129L310.313 255.752C312.523 252.954 314.054 249.804 314.783 246.556C315.512 243.308 315.418 240.053 314.508 237.054L323.183 232.107C324.237 231.506 325.046 230.572 325.43 229.513C325.814 228.453 325.742 227.353 325.231 226.456L315.585 209.54C315.073 208.643 314.163 208.022 313.055 207.813C311.948 207.603 310.733 207.824 309.678 208.425ZM315.347 227.609L303.908 234.132C308.007 244.137 307.359 247.789 299.808 255.815L306.917 268.282L298.963 272.818L293.175 262.669L265.335 278.545L271.122 288.694L263.168 293.23L256.18 280.977C250.286 281.771 244.5 281.016 239.503 278.801C234.506 276.586 230.504 273.003 227.967 268.471C218.639 252.114 230.443 235.676 246.28 226.645L267.494 214.547L274.239 201.735L279.595 211.126C292.8 211.935 293.35 217.566 297.699 224.223L309.559 217.46L315.347 227.609Z" fill="black"/>
+                                    <g clip-path="url(#clip2_178_12)">
+                                    <path d="M297.212 326.662L230.008 341.97L251.608 319.164L288.202 310.86L363.593 231.215L394.219 224.238L297.212 326.662Z" fill="#46997D"/>
+                                    </g>
+                                    </g>
+                                    </g>
+                                    <defs>
+                                    <filter id="filter0_d_178_12" x="18.3342" y="21.1526" width="484.206" height="463.076" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feOffset dy="4"/>
+                                    <feGaussianBlur stdDeviation="2"/>
+                                    <feComposite in2="hardAlpha" operator="out"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_178_12"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_178_12" result="shape"/>
+                                    </filter>
+                                    <filter id="filter1_i_178_12" x="22.3342" y="7.97827" width="486.483" height="468.25" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feOffset dx="14" dy="-14"/>
+                                    <feGaussianBlur stdDeviation="7"/>
+                                    <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
+                                    <feBlend mode="normal" in2="shape" result="effect1_innerShadow_178_12"/>
+                                    </filter>
+                                    <filter id="filter2_i_178_12" x="22.3342" y="17.9783" width="476.483" height="458.25" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                    <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                    <feOffset dx="14" dy="-14"/>
+                                    <feGaussianBlur stdDeviation="2"/>
+                                    <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+                                    <feBlend mode="normal" in2="shape" result="effect1_innerShadow_178_12"/>
+                                    </filter>
+                                    <linearGradient id="paint0_linear_178_12" x1="30.8273" y1="543.666" x2="347.713" y2="172.849" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0.0281401" stop-color="#75FFD1" stop-opacity="0.4"/>
+                                    <stop offset="1" stop-color="#46997D"/>
+                                    </linearGradient>
+                                    <clipPath id="clip0_178_12">
+                                    <rect width="360.12" height="317.379" fill="white" transform="matrix(0.868684 -0.495366 -0.495366 -0.868684 185.71 475.246)"/>
+                                    </clipPath>
+                                    <clipPath id="clip1_178_12">
+                                    <rect width="146.511" height="124.625" fill="white" transform="translate(169.258 230.217) rotate(-29.6939)"/>
+                                    </clipPath>
+                                    <clipPath id="clip2_178_12">
+                                    <rect width="254.927" height="77.2678" fill="white" transform="translate(181.602 316.908) rotate(-29.6939)"/>
+                                    </clipPath>
+                                    </defs>
+                           
+                            </svg>
+                            <h1 class="logo-text">Budget Buddy</h1>
+                        </div>
+                    </div>
+                    <p class="tagline">Your Smart Financial Companion</p>
+                    <p class="sub-tagline">Helping You Stay on Track with Your Finances.</p>
+                </div>
+
+                <!-- Quote Section -->
+                <div class="quote-section">
+                    <div class="quote-card">
+                        <i class="quote-icon">💫</i>
+                        <blockquote>
+                            "Small steps in the right direction can turn into the most amazing journey. Manage your expenses, organize your thoughts, and take control of your future—one step at a time."
+                        </blockquote>
+                        <p class="quote-author">- Budget Buddy</p>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="features-section">
+                    <h2 class="section-title">Powerful Features</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <span class="icon">📊</span>
+                            </div>
+                            <div class="feature-content">
+                                <h3>Smart Dashboard</h3>
+                                <p>Visualize your financial health with interactive charts and real-time insights.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-card" style="animation-delay: 0.2s">
+                            <div class="feature-icon">
+                                <span class="icon">💰</span>
+                            </div>
+                            <div class="feature-content">
+                                <h3>Expense Tracking</h3>
+                                <p>Track and categorize your expenses to maintain better financial control.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-card" style="animation-delay: 0.4s">
+                            <div class="feature-icon">
+                                <span class="icon">⏰</span>
+                            </div>
+                            <div class="feature-content">
+                                <h3>Smart Reminders</h3>
+                                <p>Never miss a payment with automated bill reminders and notifications.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-card" style="animation-delay: 0.6s">
+                            <div class="feature-icon">
+                                <span class="icon">📝</span>
+                            </div>
+                            <div class="feature-content">
+                                <h3>Financial Notes</h3>
+                                <p>Keep track of important financial information and goals.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why Choose Us Section -->
+                <div class="why-us-section">
+                    <h2 class="section-title">Why Choose Budget Buddy?</h2>
+                    <div class="benefits-grid">
+                        <div class="benefit-card">
+                            <span class="benefit-icon">🔒</span>
+                            <h3>Secure & Private</h3>
+                            <p>Your financial data stays private and secure</p>
+                        </div>
+                        <div class="benefit-card">
+                            <span class="benefit-icon">🚀</span>
+                            <h3>Easy to Use</h3>
+                            <p>Intuitive interface for seamless experience</p>
+                        </div>
+                        <div class="benefit-card">
+                            <span class="benefit-icon">💡</span>
+                            <h3>Smart Insights</h3>
+                            <p>Get intelligent financial recommendations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Started Section -->
+                <div class="get-started-section">
+                    <h2>Ready to Take Control of Your Finances?</h2>
+                    <p>Start your journey to financial wellness today!</p>
+                    <a href="/dashboard" class="cta-button">Get Started Now</a>
+                </div>
+
+                <!-- Footer Section -->
+                <footer class="about-footer">
+                    <div class="version-text">
+                        Version: 1.0.0 | Last Updated: February 2024
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/about.js"></script>
+</body>
+</html> 

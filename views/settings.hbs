@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+        <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <div class="settings-content">
+                <h1>Settings</h1>
+
+                <!-- Profile Settings -->
+                <div class="settings-section">
+                    <h2>Profile</h2>
+                    <div class="settings-card profile-settings">
+                        <div class="avatar-section">
+                            <div class="avatar-preview">👤</div>
+                            <button class="change-avatar-btn" id="changeAvatarBtn">Change Avatar</button>
+                        </div>
+                        <form class="profile-form" action="/update-profile" method="POST">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" value="{{user.username}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email (Cannot be changed)</label>
+                                <input type="email" id="email" name="email" value="{{user.email}}" disabled>
+                            </div>
+                            <button type="submit" class="save-btn">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Password Update -->
+                <section class="settings-section">
+                    <h2>Update Password</h2>
+                    <div class="settings-card">
+                        <form action="/update-password" method="POST">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" name="currentPassword" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+
+                            <button type="submit" class="save-btn">Update Password</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Notification Settings -->
+                <div class="settings-section">
+                    <h2>Notifications</h2>
+                    <div class="settings-card">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>Email Notifications</h3>
+                                <p>Receive updates via email</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="emailNotifications" {{#if user.emailNotifications}}checked{{/if}}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h3>Push Notifications</h3>
+                                <p>Get instant alerts on your device</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="pushNotifications" {{#if user.pushNotifications}}checked{{/if}}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
+                <div class="settings-section">
+                    <div class="settings-card logout-box">
+                        <form method="POST" action="/logout">
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+/* Visuals and Charts CSS */
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 24px;
+    width: 100%;
+}
+
+.chart-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.chart-card h3 {
+    margin: 0 0 15px 0;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .chart-card {
+    background: var(--dark-card-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .chart-card h3 {
+    color: var(--dark-text);
+}
+
+[data-theme="dark"] .chart-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 1400px) {
+    .chart-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Chart-specific styles */
+.budget-vs-expense {
+    border-left: 4px solid #46997D;
+}
+
+.category-pie {
+    border-left: 4px solid #e67e22;
+}
+
+.monthly-trend {
+    border-left: 4px solid #3498db;
+}
+
+.daily-expenses {
+    border-left: 4px solid #9b59b6;
+}
+
+.budget-utilization {
+    border-left: 4px solid #f1c40f;
+}
+
+.expense-distribution {
+    border-left: 4px solid #e74c3c;
+}
+
+/* Add styles for progress ring */
+.progress-ring-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+.progress-ring-circle-bg {
+    transition: stroke-dashoffset 0.5s;
+}
+
+.progress-ring-circle {
+    transition: stroke-dashoffset 0.8s ease;
+    transform-origin: center;
+}
+
+.progress-text {
+    transform: rotate(90deg);
+    font-family: 'Poppins', sans-serif;
+} 

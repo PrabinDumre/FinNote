@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visuals and Charts - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/visuals.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+        <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link active">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <div class="dashboard-container">
+                <!-- Top Navigation Bar -->
+                <nav class="top-nav">
+                    <div class="search-container">
+                        <h1>Visuals & Charts</h1>
+                    </div>
+                  
+                </nav>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Charts Grid -->
+                    <div class="chart-grid">
+                        <!-- Transaction Charts (New) -->
+                        <div class="chart-card">
+                            <canvas id="givenVsTakenChart"></canvas>
+                        </div>
+                        
+                        <!-- Existing Charts -->
+                        <div class="chart-card">
+                            <canvas id="budgetVsExpenseChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="categoryPieChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="personTransactionChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="monthlyTrendChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="dailyExpensesChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="budgetUtilizationChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="expenseDistributionChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="yearComparisonChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="weeklyPatternChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="savingsTrendChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <canvas id="categoryGrowthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/visuals.js"></script>
+</body>
+</html> 

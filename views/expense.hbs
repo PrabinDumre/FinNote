@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Management - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/budget.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="js/budget.js" defer></script>
+    <script src="js/financial-planning.js" defer></script>
+    <script src="js/notifications.js" defer></script>
+    <script src="js/transactions.js" defer></script>
+    <script src="js/expense.js" defer></script>
+    <style>
+        /* ... existing styles ... */
+
+        .export-pdf-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .export-pdf-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .export-pdf-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .btn-icon {
+            font-size: 1.1em;
+        }
+
+        /* ... rest of the styles ... */
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+         <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3 id="username">{{username}}</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/visuals-and-charts" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Visuals & Charts</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+        <!-- Wrap existing content -->
+        <div class="main-container">
+            <div class="expense-container">
+                <!-- Header Section -->
+                <header class="expense-header">
+                    <h1>Expense Management</h1>
+                    <button id="set-budget-btn" class="btn-primary">Set Budget</button>
+                </header>
+
+                <!-- Budget Modal -->
+                <div id="budget-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Set Your Budget</h2>
+                            <button id="close-budget-modal" class="close-btn">&times;</button>
+                        </div>
+                        <form id="budget-form">
+                            <div class="form-group">
+                                <label for="total-budget">Total Budget Amount (₹)</label>
+                                <input type="number" id="total-budget" required min="0" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="budget-duration">Budget Duration</label>
+                                <select id="budget-duration" required>
+                                    <option value="1">1 month</option>
+                                    <option value="3">3 months</option>
+                                    <option value="6">6 months</option>
+                                    <option value="12">12 months</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Select Categories</label>
+                                <div class="categories-container">
+                                    <div class="category-checkboxes">
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-grocery" name="categories" value="Grocery">
+                                            <label for="cat-grocery">Grocery</label>
+                                        </div>
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-food" name="categories" value="Food">
+                                            <label for="cat-food">Food</label>
+                                        </div>
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-transportation" name="categories" value="Transportation">
+                                            <label for="cat-transportation">Transportation</label>
+                                        </div>
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-shopping" name="categories" value="Shopping">
+                                            <label for="cat-shopping">Shopping</label>
+                                        </div>
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-entertainment" name="categories" value="Entertainment">
+                                            <label for="cat-entertainment">Entertainment</label>
+                                        </div>
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-bills" name="categories" value="Bills">
+                                            <label for="cat-bills">Bills</label>
+                                        </div>
+                                        <div class="category-item">
+                                            <input type="checkbox" id="cat-health" name="categories" value="Health">
+                                            <label for="cat-health">Health</label>
+                                        </div>
+                                    </div>
+                                    <div id="custom-categories-container">
+                                        <!-- Custom categories will be added here -->
+                                    </div>
+                                    <button type="button" id="add-category-btn" class="btn-secondary">
+                                        <span class="button-icon">+</span> Add Custom Category
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="allocation-method">Budget Allocation Method</label>
+                                <select id="allocation-method" required>
+                                    <option value="automatic">Automatic (Equal Distribution)</option>
+                                    <option value="manual">Manual Allocation</option>
+                                </select>
+                            </div>
+                            
+                            <div class="manual-allocations" style="display: none;">
+                                <h3>Manual Allocations</h3>
+                                <div id="category-allocations">
+                                    <!-- Category allocation inputs will be added here -->
+                                </div>
+                                <div class="budget-summary">
+                                    <p>Total Allocated: <span id="allocated-amount">₹0.00</span></p>
+                                    <p>Remaining: <span id="remaining-amount">₹0.00</span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <span class="button-icon">💾</span> Save Budget
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Net Amount Section -->
+                <div class="balance-section">
+                    <div class="balance-header">
+                        <h2 class="section-title">Overall Summary</h2>
+                        <div class="balance-actions">
+                            <button class="export-pdf-btn" onclick="downloadPDF()" disabled>
+                                <span class="btn-icon">📄</span> Export PDF
+                            </button>
+                            <button class="view-transactions-btn" onclick="showTransactionsModal()">View Transactions</button>
+                            <button class="amount-have-btn" onclick="showAmountHaveModal()">Amount I Have</button>
+                            <button class="update-btn" onclick="showUpdateBalanceModal()">Update</button>
+                        </div>
+                    </div>
+                    <div class="balance-grid">
+                        <div class="balance-box net-amount">
+                            <h3>Net Amount</h3>
+                            <div class="amount" id="netAmount">₹0.00</div>
+                            <div class="amount-value" id="netAmountValue">₹0.00</div>
+                        </div>
+                        <div class="balance-box given-amount">
+                            <h3>Total Given Amount</h3>
+                            <div class="amount positive" id="totalGiven">₹0.00</div>
+                            <div class="amount-value" id="totalGivenValue">₹0.00</div>
+                        </div>
+                        <div class="balance-box taken-amount">
+                            <h3>Total Taken Amount</h3>
+                            <div class="amount negative" id="totalTaken">₹0.00</div>
+                            <div class="amount-value" id="totalTakenValue">₹0.00</div>
+                        </div>
+                        <div class="balance-box expense-amount">
+                            <h3>Total Expenses</h3>
+                            <div class="amount negative" id="totalExpenses">₹0.00</div>
+                            <div class="amount-value" id="totalExpensesValue">₹0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-content-wrapper">
+                    <!-- Left Side: Quick Access Section -->
+                    <div class="quick-access-section">
+                        <h2 class="section-title">Quick Access</h2>
+                        <div class="expense-type-tabs">
+                            <button class="type-tab active" data-type="give">
+                                <div class="tab-icon">💸</div>
+                                <div class="tab-content">
+                                    <h3>Given</h3>
+                                    <p>Money lent to someone</p>
+                                </div>
+                                <div class="add-icon">+</div>
+                            </button>
+                            <button class="type-tab" data-type="take">
+                                <div class="tab-icon">💰</div>
+                                <div class="tab-content">
+                                    <h3>Taken</h3>
+                                    <p>Money borrowed from someone</p>
+                                </div>
+                                <div class="add-icon">+</div>
+                            </button>
+                            <button class="type-tab" data-type="expense">
+                                <div class="tab-icon">📝</div>
+                                <div class="tab-content">
+                                    <h3>Other Expenses</h3>
+                                    <p>Spended for Personal Use</p>
+                                </div>
+                                <div class="add-icon">+</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Middle: Summary of Borrowers & Lenders -->
+                    <div class="summary-card-section">
+                        <h2 class="section-title">Summary of Borrowers & Lenders</h2>
+                        <div class="people-summary">
+                            <!-- Summary content will be populated dynamically -->
+                        </div>
+                        <button class="view-all-btn" onclick="showPeopleDetailsModal()">View All Details</button>
+                    </div>
+
+                    <!-- Right: Expense Summary -->
+                    <div class="summary-card-section expense-summary-section">
+                        <h2 class="section-title">Summary of Personal Expenses</h2>
+                        <div class="expense-summary-content">
+                            <div class="category-summary">
+                                <!-- Category-wise summary will be populated dynamically -->
+                            </div>
+                            <button class="view-all-btn" onclick="showExpenseDetailsModal()">View All Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{!-- <!-- Charts Section moved below -->
+                <div class="charts-section">
+                    <h2 class="chart-title">Monthly Report</h2>
+                    <div class="charts-container">
+                        <!-- Monthly Overview -->
+                        <div class="chart-card monthly-overview">
+                            <h3>Monthly Overview</h3>
+                            <div class="line-chart-container">
+                                <canvas id="monthlyTrendChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Daily Expenses -->
+                        <div class="chart-card daily-expenses">
+                            <h3>Daily Expenses</h3>
+                            <div class="bar-chart-container">
+                                <canvas id="dailyExpensesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
+
+                <!-- Financial Planning Section -->
+                <div class="financial-planning-section">
+                    <h2 class="section-title">Financial Planning</h2>
+                    <div class="budget-analysis-container">
+                        <!-- Budget Analysis will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Add New Transaction Button -->
+                <button class="add-transaction-btn">+</button>
+
+                <!-- Add Give Money Modal -->
+                <div class="modal" id="giveModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>💸 Give Money</h2>
+                            <button class="close-btn">&times;</button>
+                        </div>
+                        <form id="giveMoneyForm">
+                            <div class="form-group">
+                                <label>Person Name</label>
+                                <input type="text" id="givePerson" placeholder="Enter person's name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount Given</label>
+                                <input type="number" id="giveAmount" placeholder="Enter amount" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="giveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description (Optional)</label>
+                                <textarea id="giveDescription" placeholder="e.g., Lent for groceries"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="cancel-btn">Cancel</button>
+                                <button type="submit" class="save-btn">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Monthly Trend Line Chart
+        const monthlyCtx = document.getElementById('monthlyTrendChart').getContext('2d');
+        window.monthlyTrendChart = new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Net Balance',
+                    data: [0, 0, 0, 0, 0, 0], // Will be updated with real data
+                    borderColor: '#46997D',
+                    backgroundColor: 'rgba(70, 153, 125, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#46997D',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Monthly Net Balance Trend',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 8,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Net Balance: ₹${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Net Amount (₹)',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Daily Expenses Bar Chart
+        const dailyCtx = document.getElementById('dailyExpensesChart').getContext('2d');
+        window.dailyExpensesChart = new Chart(dailyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    {
+                        label: 'Given',
+                        data: [0, 0, 0, 0, 0, 0, 0], // Will be updated with real data
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: '#2ecc71',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Taken',
+                        data: [0, 0, 0, 0, 0, 0, 0], // Will be updated with real data
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: '#e74c3c',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'This Week\'s Daily Expenses',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 8,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (₹)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Take Money Modal -->
+    <div class="modal" id="takeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 Take Money</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="takeMoneyForm">
+                <div class="form-group">
+                    <label>Person Name</label>
+                    <input type="text" id="takePerson" placeholder="Enter person's name" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount Taken</label>
+                    <input type="number" id="takeAmount" placeholder="Enter amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="takeDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <textarea id="takeDescription" placeholder="e.g., Borrowed for groceries"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📝 Add Expense</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="expenseForm">
+                <div class="form-group">
+                    <label>Expense Category</label>
+                    <select id="expenseCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Grocery">Grocery</option>
+                        <option value="Food">Food</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group" id="otherCategoryGroup" style="display: none;">
+                    <label>Specify Category</label>
+                    <input type="text" id="otherCategory" placeholder="Enter category name">
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <div class="amount-input">
+                        <input type="number" id="expenseAmount" placeholder="Enter amount" step="0.01" min="0" required style="padding-left: 25px;">
+                        <span class="currency" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">₹</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn" style="background-color: #46997D; color: white; cursor: pointer;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Expense Modal -->
+    <div class="modal" id="editExpenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📝 Edit Expense</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editExpenseForm">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label>Expense Category</label>
+                    <select id="editExpenseCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Grocery">Grocery</option>
+                        <option value="Food">Food</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group" id="editOtherCategoryGroup" style="display: none;">
+                    <label>Specify Category</label>
+                    <input type="text" id="editOtherCategory" placeholder="Enter category name">
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <div class="amount-input">
+                        <input type="number" id="editExpenseAmount" placeholder="Enter amount" step="0.01" min="0" required style="padding-left: 25px;">
+                        <span class="currency" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">₹</span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn" style="background-color: #46997D; color: white; cursor: pointer;">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Get all the add buttons and modals
+    const giveAddBtn = document.querySelector('[data-type="give"] .add-icon');
+    const takeAddBtn = document.querySelector('[data-type="take"] .add-icon');
+    const expenseAddBtn = document.querySelector('[data-type="expense"] .add-icon');
+
+    const giveModal = document.getElementById('giveModal');
+    const takeModal = document.getElementById('takeModal');
+    const expenseModal = document.getElementById('expenseModal');
+
+    // Initialize TransactionManager
+    let transactionManager;
+    document.addEventListener('DOMContentLoaded', () => {
+        transactionManager = new TransactionManager();
+        // Force an initial update
+        transactionManager.updateUI();
+    });
+
+    // Open respective modals when clicking the + buttons
+    giveAddBtn.addEventListener('click', () => giveModal.classList.add('show'));
+    takeAddBtn.addEventListener('click', () => takeModal.classList.add('show'));
+    expenseAddBtn.addEventListener('click', () => expenseModal.classList.add('show'));
+
+    // Close modal functionality for all modals
+    document.querySelectorAll('.modal').forEach(modal => {
+        const closeBtn = modal.querySelector('.close-btn');
+        const cancelBtn = modal.querySelector('.cancel-btn');
+        
+        closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+        cancelBtn.addEventListener('click', () => modal.classList.remove('show'));
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('show');
+        });
+    });
+
+    // Form submission handlers
+    const giveMoneyForm = document.getElementById('giveMoneyForm');
+    const takeMoneyForm = document.getElementById('takeMoneyForm');
+
+    giveMoneyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Set default date to today if not specified
+        const giveDate = document.getElementById('giveDate');
+        if (!giveDate.value) {
+            giveDate.value = new Date().toISOString().split('T')[0];
+        }
+        
+        const formData = {
+            personName: document.getElementById('givePerson').value,
+            amount: parseFloat(document.getElementById('giveAmount').value),
+            date: giveDate.value,
+            description: document.getElementById('giveDescription').value
+        };
+        // Add transaction using TransactionManager
+        window.transactionManager.addTransaction('give', formData);
+        giveModal.classList.remove('show');
+        giveMoneyForm.reset();
+    });
+
+    takeMoneyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Set default date to today if not specified
+        const takeDate = document.getElementById('takeDate');
+        if (!takeDate.value) {
+            takeDate.value = new Date().toISOString().split('T')[0];
+        }
+
+        const formData = {
+            personName: document.getElementById('takePerson').value,
+            amount: parseFloat(document.getElementById('takeAmount').value),
+            date: takeDate.value,
+            description: document.getElementById('takeDescription').value
+        };
+        // Add transaction using TransactionManager
+        window.transactionManager.addTransaction('take', formData);
+        takeModal.classList.remove('show');
+        takeMoneyForm.reset();
+    });
+
+    // Add expense modal functionality
+    const expenseForm = document.getElementById('expenseForm');
+    const expenseCategory = document.getElementById('expenseCategory');
+    const otherCategoryGroup = document.getElementById('otherCategoryGroup');
+    const otherCategory = document.getElementById('otherCategory');
+    const expenseAmount = document.getElementById('expenseAmount');
+
+    // Show/hide other category input based on selection
+    expenseCategory.addEventListener('change', () => {
+        otherCategoryGroup.style.display = expenseCategory.value === 'other' ? 'block' : 'none';
+        if (expenseCategory.value !== 'other') {
+            otherCategory.value = '';
+        }
+    });
+
+    // Handle expense form submission
+    expenseForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const category = expenseCategory.value === 'other' ? otherCategory.value : expenseCategory.value;
+        const amount = parseFloat(expenseAmount.value);
+
+        if (!category || !amount || amount <= 0) {
+            alert('Please fill in all required fields with valid values');
+            return;
+        }
+
+        try {
+            // Add expense using TransactionManager
+            await window.transactionManager.addExpense({
+                category: category,
+                amount: amount,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            // Update net amount by deducting the expense
+            const currentNetAmount = parseFloat(document.querySelector('.amount').textContent.replace('₹', '')) || 0;
+            const newNetAmount = currentNetAmount - amount;
+            document.querySelector('.amount').textContent = `₹${newNetAmount.toFixed(2)}`;
+
+            // Close modal and reset form
+            expenseModal.classList.remove('show');
+            expenseForm.reset();
+            otherCategoryGroup.style.display = 'none';
+
+            // Show success message
+            alert('Expense saved successfully!');
+
+            // Update UI to reflect the new expense
+            window.transactionManager.updateUI();
+        } catch (error) {
+            console.error('Error adding expense:', error);
+        }
+    });
+
+    // Add input validation for amount
+    expenseAmount.addEventListener('input', function() {
+        if (this.value < 0) {
+            this.value = 0;
+        }
+    });
+
+    // Add edit expense functionality
+    const editExpenseModal = document.getElementById('editExpenseModal');
+    const editExpenseForm = document.getElementById('editExpenseForm');
+    const editExpenseCategory = document.getElementById('editExpenseCategory');
+    const editOtherCategoryGroup = document.getElementById('editOtherCategoryGroup');
+    const editOtherCategory = document.getElementById('editOtherCategory');
+    const editExpenseAmount = document.getElementById('editExpenseAmount');
+
+    // Show/hide other category input based on selection in edit modal
+    editExpenseCategory.addEventListener('change', () => {
+        editOtherCategoryGroup.style.display = editExpenseCategory.value === 'other' ? 'block' : 'none';
+        if (editExpenseCategory.value !== 'other') {
+            editOtherCategory.value = '';
+        }
+    });
+
+    // Handle edit expense form submission
+    editExpenseForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const expenseId = document.getElementById('editExpenseId').value;
+        const category = editExpenseCategory.value === 'other' ? editOtherCategory.value : editExpenseCategory.value;
+        const amount = parseFloat(editExpenseAmount.value);
+
+        if (!category || !amount || amount <= 0) {
+            alert('Please fill in all required fields with valid values');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/expense/${expenseId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    category,
+                    amount
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update expense');
+            }
+
+            // Close modal and reset form
+            editExpenseModal.classList.remove('show');
+            editExpenseForm.reset();
+            editOtherCategoryGroup.style.display = 'none';
+
+            // Show success message
+            alert('Expense updated successfully!');
+
+            // Refresh the page to show updated data
+            window.location.reload();
+        } catch (error) {
+            console.error('Error updating expense:', error);
+            alert('Failed to update expense. Please try again.');
+        }
+    });
+
+    // Add input validation for amount in edit form
+    editExpenseAmount.addEventListener('input', function() {
+        if (this.value < 0) {
+            this.value = 0;
+        }
+    });
+
+    // Function to open edit modal with expense data
+    function openEditExpenseModal(expense) {
+        window.expenseManager.openEditModal(expense);
+    }
+
+    // Function to delete expense
+    function deleteExpense(expenseId) {
+        window.expenseManager.deleteExpense(expenseId);
+    }
+    </script>
+
+    <script src="js/theme.js"></script>
+
+    <!-- Update Balance Modal -->
+    <div class="modal" id="updateBalanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 Update Net Amount</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="updateBalanceForm">
+                <div class="form-group">
+                    <label>New Net Amount</label>
+                    <div class="amount-input">
+                        <input type="number" id="newNetAmount" placeholder="Enter amount" step="0.01" min="0" required style="padding-left: 30px;">
+                        <span class="currency" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%);">₹</span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Balance Modal -->
+    <div class="modal" id="addBalanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 Add to Balance</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="addBalanceForm">
+                <div class="form-group">
+                    <label>Amount to Add</label>
+                    <div class="amount-input">
+                        <input type="number" id="amountToAdd" placeholder="Enter amount" step="0.01" min="0" required>
+                        <span class="currency">₹</span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    class BalanceManager {
+        constructor() {
+            this.currentNetAmount = 0;
+            this.initializeEventListeners();
+            this.loadBalance();
+        }
+
+        async loadBalance() {
+            try {
+                const [balanceResponse, expensesResponse, transactionsResponse] = await Promise.all([
+                    fetch('/balance'),  // Get user's net amount
+                    fetch('/expense/list'),  // Get expenses
+                    fetch('/transactions/list')  // Get transactions
+                ]);
+
+                if (balanceResponse.ok && expensesResponse.ok && transactionsResponse.ok) {
+                    const balance = await balanceResponse.json();
+                    const expenses = await expensesResponse.json();
+                    const transactions = await transactionsResponse.json();
+
+                    // Calculate totals
+                    const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+                    const totalGiven = transactions
+                        .filter(t => t.type === 'give')
+                        .reduce((sum, t) => sum + t.amount, 0);
+                    const totalTaken = transactions
+                        .filter(t => t.type === 'take')
+                        .reduce((sum, t) => sum + t.amount, 0);
+
+                    // Store the current net amount
+                    this.currentNetAmount = balance.netAmount || 0;
+                    
+                    // Calculate amount I have using the current net amount
+                    const amountIHave = this.currentNetAmount + totalTaken - totalGiven - totalExpenses;
+                    
+                    // Update all displays
+                    document.getElementById('netAmount').textContent = 'Net Amount';
+                    document.getElementById('netAmountValue').textContent = `₹${this.currentNetAmount.toFixed(2)}`;
+                    document.getElementById('netAmountValue').className = `amount-value ${this.currentNetAmount >= 0 ? 'positive' : 'negative'}`;
+
+                    document.getElementById('totalGiven').textContent = 'Total Given';
+                    document.getElementById('totalGivenValue').textContent = `₹${totalGiven.toFixed(2)}`;
+                    document.getElementById('totalGivenValue').className = 'amount-value negative';
+
+                    document.getElementById('totalTaken').textContent = 'Total Taken';
+                    document.getElementById('totalTakenValue').textContent = `₹${totalTaken.toFixed(2)}`;
+                    document.getElementById('totalTakenValue').className = 'amount-value positive';
+
+                    document.getElementById('totalExpenses').textContent = 'Total Expenses';
+                    document.getElementById('totalExpensesValue').textContent = `₹${totalExpenses.toFixed(2)}`;
+                    document.getElementById('totalExpensesValue').className = 'amount-value negative';
+
+                    // Update Amount I Have modal with the current net amount
+                    document.getElementById('calculatedAmount').textContent = `₹${amountIHave.toFixed(2)}`;
+                    document.getElementById('calculatedAmount').className = `${amountIHave >= 0 ? 'positive' : 'negative'}`;
+                }
+            } catch (error) {
+                console.error('Error loading balance data:', error);
+            }
+        }
+
+        async updateNetAmount(amount) {
+            try {
+                const response = await fetch('/balance/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount })
+                });
+
+                if (response.ok) {
+                    // Update the current net amount immediately
+                    this.currentNetAmount = amount;
+                    await this.loadBalance();
+                } else {
+                    throw new Error('Failed to update balance');
+                }
+            } catch (error) {
+                console.error('Error updating balance:', error);
+                alert('Failed to update balance. Please try again.');
+            }
+        }
+
+        initializeEventListeners() {
+            // Update Balance Form
+            const updateBalanceForm = document.getElementById('updateBalanceForm');
+            updateBalanceForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const amount = parseFloat(document.getElementById('newNetAmount').value);
+                await this.updateNetAmount(amount);
+                document.getElementById('updateBalanceModal').classList.remove('show');
+                updateBalanceForm.reset();
+            });
+
+            // Cancel buttons for all modals
+            document.querySelectorAll('.cancel-btn, .close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('updateBalanceModal').classList.remove('show');
+                    document.getElementById('amountHaveModal').classList.remove('show');
+                });
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        window.balanceManager = new BalanceManager();
+        window.transactionManager = new TransactionManager();
+        window.expenseManager = new ExpenseManager();
+        
+        // Initialize the type tabs functionality
+        const typeTabs = document.querySelectorAll('.type-tab');
+        const giveModal = document.getElementById('giveModal');
+        const takeModal = document.getElementById('takeModal');
+        const expenseModal = document.getElementById('expenseModal');
+        
+        typeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                typeTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const type = tab.dataset.type;
+                if (type === 'give') {
+                    giveModal.classList.add('show');
+                } else if (type === 'take') {
+                    takeModal.classList.add('show');
+                } else if (type === 'expense') {
+                    expenseModal.classList.add('show');
+                }
+            });
+        });
+        
+        // Handle give/take form submissions
+        const giveMoneyForm = document.getElementById('giveMoneyForm');
+        const takeMoneyForm = document.getElementById('takeMoneyForm');
+        
+        if (giveMoneyForm) {
+            giveMoneyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const personName = document.getElementById('givePerson').value;
+                const amount = parseFloat(document.getElementById('giveAmount').value);
+                const date = document.getElementById('giveDate').value || new Date().toISOString().split('T')[0];
+                const description = document.getElementById('giveDescription').value || '';
+                
+                await window.transactionManager.addTransaction('give', {
+                    personName,
+                    amount,
+                    date,
+                    description
+                });
+                
+                giveModal.classList.remove('show');
+                giveMoneyForm.reset();
+                
+                // Refresh balance data
+                window.balanceManager.loadBalance();
+            });
+        }
+        
+        if (takeMoneyForm) {
+            takeMoneyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const personName = document.getElementById('takePerson').value;
+                const amount = parseFloat(document.getElementById('takeAmount').value);
+                const date = document.getElementById('takeDate').value || new Date().toISOString().split('T')[0];
+                const description = document.getElementById('takeDescription').value || '';
+                
+                await window.transactionManager.addTransaction('take', {
+                    personName,
+                    amount,
+                    date,
+                    description
+                });
+                
+                takeModal.classList.remove('show');
+                takeMoneyForm.reset();
+                
+                // Refresh balance data
+                window.balanceManager.loadBalance();
+            });
+        }
+        
+        // Close modal buttons
+        document.querySelectorAll('.modal .close-btn, .modal .cancel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = btn.closest('.modal');
+                if (modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+        
+        // Set today's date as default for date inputs
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            input.value = today;
+        });
+    });
+
+    // Modal show/hide functions
+    function showUpdateBalanceModal() {
+        document.getElementById('updateBalanceModal').classList.add('show');
+    }
+
+    function showAmountHaveModal() {
+        window.balanceManager.loadBalance(); // Refresh the calculated amount
+        document.getElementById('amountHaveModal').classList.add('show');
+    }
+
+    function closeAmountHaveModal() {
+        document.getElementById('amountHaveModal').classList.remove('show');
+    }
+    
+    // People details modal functions
+    function showPeopleDetailsModal() {
+        document.getElementById('peopleDetailsModal').classList.add('show');
+        window.transactionManager.updatePeopleDetailsList();
+    }
+    
+    function closePeopleDetailsModal() {
+        document.getElementById('peopleDetailsModal').classList.remove('show');
+    }
+    </script>
+
+    <!-- Add Expense Details Modal -->
+    <div class="modal" id="expenseDetailsModal">
+        <div class="modal-content summary-modal">
+            <div class="modal-header">
+                <div class="header-content">
+                    <span class="modal-icon">📊</span>
+                    <h2>All Expenses</h2>
+                </div>
+                <button class="close-btn" onclick="closeExpenseDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="expense-details-list">
+                    <!-- Expense details will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amount I Have Modal -->
+    <div class="modal" id="amountHaveModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 Amount I Have</h2>
+                <button class="close-btn" onclick="closeAmountHaveModal()">&times;</button>
+            </div>
+            <div class="calculated-amount">
+                <span id="calculatedAmount">₹0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Transaction History Modal -->
+    <div class="modal" id="transactionsModal">
+        <div class="modal-content summary-modal">
+            <div class="modal-header">
+                <div class="header-content">
+                    <span class="modal-icon">📋</span>
+                    <h2>Transaction History</h2>
+                </div>
+                <button class="close-btn" onclick="closeTransactionsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-filters">
+                    <select id="transactionTypeFilter" onchange="filterTransactions()">
+                        <option value="all">All Transactions</option>
+                        <option value="give">Given</option>
+                        <option value="take">Taken</option>
+                        <option value="expense">Expenses</option>
+                    </select>
+                </div>
+                <div class="transactions-list">
+                    <!-- Transactions will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function showTransactionsModal() {
+        document.getElementById('transactionsModal').classList.add('show');
+        loadTransactionHistory();
+    }
+
+    function closeTransactionsModal() {
+        document.getElementById('transactionsModal').classList.remove('show');
+    }
+
+    async function loadTransactionHistory() {
+        try {
+            const [transactionsResponse, expensesResponse] = await Promise.all([
+                fetch('/transactions/list'),
+                fetch('/expense/list')
+            ]);
+
+            if (transactionsResponse.ok && expensesResponse.ok) {
+                const transactions = await transactionsResponse.json();
+                const expenses = await expensesResponse.json();
+
+                // Combine and format all transactions
+                const allTransactions = [
+                    ...transactions.map(t => ({
+                        ...t,
+                        formattedDate: new Date(t.date).toLocaleDateString(),
+                        transactionType: t.type
+                    })),
+                    ...expenses.map(e => ({
+                        amount: e.amount,
+                        description: e.category,
+                        date: e.date,
+                        formattedDate: new Date(e.date).toLocaleDateString(),
+                        transactionType: 'expense'
+                    }))
+                ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                displayTransactions(allTransactions);
+            }
+        } catch (error) {
+            console.error('Error loading transaction history:', error);
+        }
+    }
+
+    function displayTransactions(transactions) {
+        const transactionsList = document.querySelector('.transactions-list');
+        const selectedType = document.getElementById('transactionTypeFilter').value;
+
+        const filteredTransactions = selectedType === 'all' 
+            ? transactions 
+            : transactions.filter(t => t.transactionType === selectedType);
+
+        const transactionsHTML = filteredTransactions.map(transaction => {
+            const isGiven = transaction.transactionType === 'give';
+            const amountColor = isGiven ? '#2ecc71' : '#e74c3c';
+            const borderColor = isGiven ? '#2ecc71' : '#e74c3c';
+            
+            return `
+                <div class="transaction-item ${transaction.transactionType}" style="border-left: 4px solid ${borderColor}">
+                    <div class="transaction-info">
+                        <div class="transaction-header">
+                            <span class="transaction-type">
+                                ${getTransactionIcon(transaction.transactionType)}
+                                ${transaction.transactionType === 'give' ? 'Given to' : 
+                                  transaction.transactionType === 'take' ? 'Taken from' : 
+                                  'Expense for'} 
+                                ${transaction.personName || transaction.description}
+                            </span>
+                            <span class="transaction-date">${transaction.formattedDate}</span>
+                        </div>
+                        <div class="transaction-amount" style="color: ${amountColor}">
+                            ₹${transaction.amount.toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        transactionsList.innerHTML = transactionsHTML || '<p class="no-transactions">No transactions found</p>';
+    }
+
+    function getTransactionIcon(type) {
+        switch(type) {
+            case 'give': return '💸';
+            case 'take': return '💰';
+            case 'expense': return '📝';
+            default: return '💱';
+        }
+    }
+
+    function filterTransactions() {
+        loadTransactionHistory();
+    }
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .view-transactions-btn {
+            background-color: #46997D;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .view-transactions-btn:hover {
+            background-color: #3a7d68;
+        }
+
+        .transaction-filters {
+            margin-bottom: 16px;
+            padding: 8px;
+        }
+
+        .transaction-filters select {
+            width: 200px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .transactions-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            background: white;
+            padding: 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .transaction-type {
+            font-weight: 500;
+        }
+
+        .transaction-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .transaction-amount {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .transaction-amount.positive {
+            color: #2ecc71;
+        }
+
+        .transaction-amount.negative {
+            color: #e74c3c;
+        }
+
+        .no-transactions {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        .transaction-item.give {
+            border-left: 4px solid #2ecc71 !important;
+        }
+
+        .transaction-item.take {
+            border-left: 4px solid #e74c3c !important;
+        }
+
+        .transaction-amount.give {
+            color: #2ecc71 !important;
+        }
+
+        .transaction-amount.take {
+            color: #e74c3c !important;
+        }
+
+        /* Transaction details specific styles */
+        .transaction-details .amount.give,
+        .transaction-details .amount-given,
+        .transaction-details[data-type="give"] .amount {
+            color: #2ecc71 !important;
+        }
+
+        .transaction-details .amount.take,
+        .transaction-details .amount-taken,
+        .transaction-details[data-type="take"] .amount {
+            color: #e74c3c !important;
+        }
+
+        /* Summary styles */
+        .summary-item.give .amount,
+        .summary-item[data-type="give"] .amount {
+            color: #2ecc71 !important;
+        }
+
+        .summary-item.take .amount,
+        .summary-item[data-type="take"] .amount {
+            color: #e74c3c !important;
+        }
+
+        /* Net amount styles */
+        .net-amount.given {
+            color: #2ecc71 !important;
+        }
+
+        .net-amount.taken {
+            color: #e74c3c !important;
+        }
+    `;
+    document.head.appendChild(style);
+    </script>
+
+    <!-- Edit Transaction Modal -->
+    <div class="modal" id="editTransactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Transaction</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editTransactionForm">
+                <input type="hidden" id="editTransactionId">
+                <input type="hidden" id="editType">
+                <div class="form-group">
+                    <label>Person Name</label>
+                    <input type="text" id="editPersonName" placeholder="Enter person's name" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <div class="amount-input">
+                        <input type="number" id="editAmount" placeholder="Enter amount" step="0.01" min="0" required style="padding-left: 25px;">
+                        <span class="currency" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">₹</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <textarea id="editDescription" placeholder="Enter description"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Add event listener for edit transaction form
+    document.getElementById('editTransactionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const transactionId = document.getElementById('editTransactionId').value;
+        const type = document.getElementById('editType').value;
+        const personName = document.getElementById('editPersonName').value;
+        const amount = parseFloat(document.getElementById('editAmount').value);
+        const description = document.getElementById('editDescription').value;
+
+        if (!personName || !amount || amount <= 0) {
+            alert('Please fill in all required fields with valid values');
+            return;
+        }
+
+        try {
+            await window.transactionManager.updateTransaction(transactionId, {
+                type,
+                personName,
+                amount,
+                description
+            });
+
+            // Update both the main view and details view
+            await window.transactionManager.loadTransactions();
+            window.transactionManager.updatePeopleSummary();
+            window.transactionManager.updatePeopleDetailsList();
+            
+            // Close the modal
+            document.getElementById('editTransactionModal').classList.remove('show');
+            form.reset();
+        } catch (error) {
+            console.error('Error updating transaction:', error);
+            alert('Failed to update transaction. Please try again.');
+        }
+    });
+
+    // Add close functionality for edit transaction modal
+    document.querySelector('#editTransactionModal .close-btn').addEventListener('click', () => {
+        document.getElementById('editTransactionModal').classList.remove('show');
+    });
+
+    document.querySelector('#editTransactionModal .cancel-btn').addEventListener('click', () => {
+        document.getElementById('editTransactionModal').classList.remove('show');
+    });
+    </script>
+
+    <!-- Add People Details Modal -->
+    <div class="modal" id="peopleDetailsModal">
+        <div class="modal-content summary-modal">
+            <div class="modal-header">
+                <div class="header-content">
+                    <span class="modal-icon">👥</span>
+                    <h2>All Borrowers & Lenders</h2>
+                </div>
+                <button class="close-btn" onclick="closePeopleDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="people-details-list">
+                    <!-- People details will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function showExpenseDetailsModal() {
+        document.getElementById('expenseDetailsModal').classList.add('show');
+        window.expenseSummaryManager.updateExpenseSummary();
+    }
+
+    function closeExpenseDetailsModal() {
+        document.getElementById('expenseDetailsModal').classList.remove('show');
+    }
+
+    // Add event listeners for the expense details modal
+    document.addEventListener('DOMContentLoaded', () => {
+        const expenseDetailsModal = document.getElementById('expenseDetailsModal');
+        const closeBtn = expenseDetailsModal.querySelector('.close-btn');
+        
+        // Close on X button click
+        closeBtn.addEventListener('click', closeExpenseDetailsModal);
+        
+        // Close on clicking outside
+        expenseDetailsModal.addEventListener('click', (e) => {
+            if (e.target === expenseDetailsModal) {
+                closeExpenseDetailsModal();
+            }
+        });
+    });
+    </script>
+
+    <!-- Add event listeners for the edit expense modal -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const editExpenseModal = document.getElementById('editExpenseModal');
+        const closeBtn = editExpenseModal.querySelector('.close-btn');
+        const cancelBtn = editExpenseModal.querySelector('.cancel-btn');
+        
+        // Close on X button click
+        closeBtn.addEventListener('click', () => {
+            editExpenseModal.classList.remove('show');
+            editExpenseModal.style.visibility = 'hidden';
+            
+            // Show other modals that were hidden
+            document.querySelectorAll('.modal').forEach(modal => {
+                if (modal !== editExpenseModal) {
+                    modal.style.visibility = 'visible';
+                }
+            });
+        });
+        
+        // Close on cancel button click
+        cancelBtn.addEventListener('click', () => {
+            editExpenseModal.classList.remove('show');
+            editExpenseModal.style.visibility = 'hidden';
+            
+            // Show other modals that were hidden
+            document.querySelectorAll('.modal').forEach(modal => {
+                if (modal !== editExpenseModal) {
+                    modal.style.visibility = 'visible';
+                }
+            });
+        });
+        
+        // Close on clicking outside
+        editExpenseModal.addEventListener('click', (e) => {
+            if (e.target === editExpenseModal) {
+                editExpenseModal.classList.remove('show');
+                editExpenseModal.style.visibility = 'hidden';
+                
+                // Show other modals that were hidden
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (modal !== editExpenseModal) {
+                        modal.style.visibility = 'visible';
+                    }
+                });
+            }
+        });
+    });
+    </script>
+
+    <script>
+        // Function to download PDF
+        async function downloadPDF() {
+            const exportBtn = document.querySelector('.export-pdf-btn');
+            try {
+                // Disable button and show loading state
+                exportBtn.disabled = true;
+                exportBtn.innerHTML = '<span class="btn-icon">⏳</span> Generating...';
+
+                const loadingToast = Toastify({
+                    text: "Generating PDF...",
+                    duration: -1,
+                    close: false,
+                    style: {
+                        background: "#3498db"
+                    }
+                }).showToast();
+
+                const response = await fetch('/api/transactions/export-pdf', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/pdf'
+                    }
+                });
+
+                loadingToast.hideToast();
+
+                // First check if the response is JSON (error message)
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to generate PDF');
+                }
+
+                // If not JSON, then it should be PDF
+                if (!contentType || !contentType.includes('application/pdf')) {
+                    throw new Error('Server did not return a PDF');
+                }
+
+                // Create blob and download
+                const blob = await response.blob();
+                if (blob.size === 0) {
+                    throw new Error('Generated PDF is empty');
+                }
+
+                // Create and click a temporary download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'transaction-history.pdf';
+                document.body.appendChild(a);
+                a.click();
+
+                // Cleanup
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                }, 100);
+
+                Toastify({
+                    text: "PDF downloaded successfully!",
+                    duration: 3000,
+                    close: true,
+                    style: {
+                        background: "#2ecc71"
+                    }
+                }).showToast();
+
+            } catch (error) {
+                console.error('PDF download error:', error);
+                Toastify({
+                    text: error.message || "Error downloading PDF",
+                    duration: 5000,
+                    close: true,
+                    style: {
+                        background: "#e74c3c"
+                    }
+                }).showToast();
+            } finally {
+                // Reset button state
+                exportBtn.disabled = false;
+                exportBtn.innerHTML = '<span class="btn-icon">📄</span> Export PDF';
+            }
+        }
+
+        // Enable export button when transactions are loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const [transactionsResponse, expensesResponse] = await Promise.all([
+                    fetch('/transactions/list'),
+                    fetch('/expense/list')
+                ]);
+
+                if (transactionsResponse.ok && expensesResponse.ok) {
+                    const transactions = await transactionsResponse.json();
+                    const expenses = await expensesResponse.json();
+
+                    // Enable the export button if there are transactions or expenses
+                    const exportBtn = document.querySelector('.export-pdf-btn');
+                    if (exportBtn) {
+                        exportBtn.disabled = !(transactions.length > 0 || expenses.length > 0);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking transactions:', error);
+                Toastify({
+                    text: "Error loading transactions",
+                    duration: 3000,
+                    close: true,
+                    style: {
+                        background: "#e74c3c"
+                    }
+                }).showToast();
+            }
+        });
+    </script>
+
+    <script>
+    // Handle transaction manager initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize transaction manager if not already initialized
+        if (!window.transactionManager) {
+            window.transactionManager = new TransactionManager();
+        }
+        
+        // Make sure the people summary is updated
+        setTimeout(() => {
+            if (window.transactionManager) {
+                window.transactionManager.loadTransactions().then(() => {
+                    window.transactionManager.updatePeopleSummary();
+                });
+            }
+        }, 500);
+    });
+    </script>
+
+    <script>
+    // Expense Summary Manager implementation
+    class ExpenseSummaryManager {
+        constructor() {
+            this.categoryColors = {
+                'Grocery': '#2ecc71',
+                'Food': '#e67e22',
+                'Transportation': '#3498db',
+                'Shopping': '#9b59b6',
+                'Entertainment': '#f1c40f',
+                'Bills': '#e74c3c',
+                'Health': '#1abc9c',
+                'Other': '#95a5a6'
+            };
+            this.updateExpenseSummary();
+        }
+
+        async updateExpenseSummary() {
+            try {
+                const response = await fetch('/expense/list');
+                if (!response.ok) throw new Error('Failed to fetch expenses');
+                const expenses = await response.json();
+                
+                // Update category summary
+                this.updateCategorySummary(expenses);
+                // Update expense details list
+                this.updateExpenseDetailsList(expenses);
+            } catch (error) {
+                console.error('Error updating expense summary:', error);
+            }
+        }
+
+        updateCategorySummary(expenses) {
+            // Group expenses by category and calculate totals
+            const categoryTotals = {};
+            
+            expenses.forEach(expense => {
+                const category = expense.category || 'Other';
+                categoryTotals[category] = (categoryTotals[category] || 0) + expense.amount;
+            });
+
+            const categorySummaryHTML = Object.entries(categoryTotals)
+                .map(([category, total]) => `
+                    <div class="category-item">
+                        <div class="category-info">
+                            <span class="category-dot" style="background-color: ${this.categoryColors[category] || '#95a5a6'}"></span>
+                            <span class="category-name">${category}</span>
+                        </div>
+                        <span class="category-amount">₹${total.toFixed(2)}</span>
+                    </div>
+                `).join('');
+
+            const categorySummary = document.querySelector('.category-summary');
+            if (categorySummary) {
+                categorySummary.innerHTML = categorySummaryHTML || '<p class="no-expenses">No expenses recorded</p>';
+            }
+        }
+
+        updateExpenseDetailsList(expenses) {
+            const expenseDetailsHTML = expenses
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map(expense => {
+                    const safeExpense = {
+                        _id: expense._id,
+                        category: expense.category,
+                        amount: expense.amount,
+                        date: expense.date
+                    };
+                    
+                    const safeExpenseJSON = JSON.stringify(safeExpense).replace(/"/g, '&quot;');
+                    
+                    return `
+                        <div class="expense-detail-item">
+                            <div class="expense-info">
+                                <span class="expense-category">
+                                    <span class="category-dot" style="background-color: ${this.categoryColors[expense.category] || '#95a5a6'}"></span>
+                                    ${expense.category}
+                                </span>
+                                <span class="expense-date">${new Date(expense.date).toLocaleDateString()}</span>
+                            </div>
+                            <div class="expense-actions">
+                                <span class="expense-amount">₹${expense.amount.toFixed(2)}</span>
+                                <div class="action-buttons">
+                                    <button class="edit-btn" onclick="openEditExpenseModal(${safeExpenseJSON})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="delete-btn" onclick="deleteExpense('${expense._id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            const expenseDetailsList = document.querySelector('.expense-details-list');
+            if (expenseDetailsList) {
+                expenseDetailsList.innerHTML = expenseDetailsHTML || '<p class="no-expenses">No expenses recorded</p>';
+            }
+        }
+    }
+
+    // Initialize ExpenseSummaryManager
+    document.addEventListener('DOMContentLoaded', () => {
+        window.expenseSummaryManager = new ExpenseSummaryManager();
+    });
+    </script>
+</body>
+</html> 

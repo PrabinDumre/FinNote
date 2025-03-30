@@ -1,0 +1,466 @@
+/* Search Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 15px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+}
+
+.search-container .search-icon {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.search-container .search-icon:hover {
+    opacity: 1;
+}
+
+/* Reminder Categories */
+.reminder-categories {
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.category-btn {
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-btn.active {
+    background: #46997D;
+    color: white;
+}
+
+/* Reminders Grid */
+.reminders-grid {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.reminder-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+}
+
+.reminder-card.high-priority {
+    border-left: 4px solid #e74c3c;
+}
+
+.reminder-card.medium-priority {
+    border-left: 4px solid #f39c12;
+}
+
+.reminder-card.low-priority {
+    border-left: 4px solid #46997D;
+}
+
+.reminder-card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+    padding-right: 30px;
+}
+
+.reminder-card .date-time {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.reminder-card p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.reminder-card .menu-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+/* Add Reminder Button */
+.add-reminder-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #46997D;
+    color: white;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.add-reminder-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.save-btn {
+    background: #46997D;
+    color: white;
+}
+
+.cancel-btn {
+    background: #f1f1f1;
+    color: #333;
+}
+
+/* Update Reminder Card Styles */
+.reminder-card .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.reminder-card .amount {
+    font-size: 18px;
+    font-weight: 600;
+    color: #46997D;
+}
+
+.reminder-card .type-badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: rgba(70, 153, 125, 0.1);
+    color: #46997D;
+}
+
+.reminder-card .status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.reminder-card .status.overdue {
+    color: #e74c3c;
+}
+
+.reminder-card .status.upcoming {
+    color: #f39c12;
+}
+
+.reminder-card .status.completed {
+    color: #46997D;
+}
+
+/* Starred reminder styles */
+.reminder-card.starred {
+    border: 2px solid #f1c40f;
+    order: -1; /* This will move starred reminders to the top */
+}
+
+/* Add these new styles */
+.notification-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.amount-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.amount-input .currency {
+    position: absolute;
+    left: 10px;
+    color: #666;
+}
+
+.amount-input input {
+    padding-left: 25px;
+}
+
+/* Reminder Card Animation */
+.reminder-card {
+    animation: slideIn 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reminder-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Status Colors */
+.reminder-card.overdue {
+    border-left: 4px solid #e74c3c;
+}
+
+.reminder-card.completed {
+    border-left: 4px solid #2ecc71;
+}
+
+.reminder-card.upcoming {
+    border-left: 4px solid #3498db;
+}
+
+/* Calendar Day Hover Effect */
+.days .day {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.days .day:hover {
+    background: rgba(70, 153, 125, 0.2);
+    transform: scale(1.05);
+}
+
+/* Add Button Animation */
+.add-reminder-btn {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(70, 153, 125, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(70, 153, 125, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(70, 153, 125, 0);
+    }
+}
+
+.reminder-card.starred {
+    border: 2px solid #ffd700;
+}
+
+.menu-btn {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.menu-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Menu Styles */
+.menu-wrapper {
+    position: relative;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+    color: #333;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    line-height: 1;
+}
+
+.menu-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% - 5px);  /* Adjust to be closer to the button */
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    min-width: 150px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s ease;
+    text-align: left;
+}
+
+.menu-item:hover {
+    background-color: rgba(70, 153, 125, 0.1);
+}
+
+.menu-item .icon {
+    margin-right: 8px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Specific button styles */
+.menu-item.delete-btn {
+    color: #e74c3c;
+}
+
+.menu-item.delete-btn:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.menu-item.pin-btn {
+    color: #f1c40f;
+}
+
+.menu-item.pin-btn:hover {
+    background-color: rgba(241, 196, 15, 0.1);
+}
+
+/* Card header layout */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 10px;
+    position: relative;  /* Add this */
+}
+
+.title-section {
+    flex: 1;
+    padding-right: 10px;
+}
+
+/* Remove any conflicting styles */
+.menu-wrapper, .menu-dropdown, .menu-option {
+    display: none;
+} 

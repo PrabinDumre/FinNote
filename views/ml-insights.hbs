@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Insights - Budget Buddy</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/ml-insights.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <label class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round">
+                <span class="theme-icon sun">🌞</span>
+                <span class="theme-icon moon">🌙</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="layout-wrapper">
+        <!-- Left Navbar -->
+        <nav class="side-navbar">
+            <div class="user-welcome">
+                <div class="user-avatar">👤</div>
+                <p>Hi,</p>
+                <h3>Budget Buddy</h3>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/expense" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Expenses</span>
+                </a>
+                <a href="/notes" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="/reminders" class="nav-link">
+                    <span class="nav-icon">⏰</span>
+                    <span>Reminders</span>
+                </a>
+                <a href="/ml-insights" class="nav-link active">
+                    <span class="nav-icon">🤖</span>
+                    <span>AI Insights</span>
+                </a>
+                <a href="/settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+                <a href="/about" class="nav-link">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>About</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <div class="dashboard-container">
+                <!-- Top Navigation Bar -->
+                <nav class="top-nav">
+                    <div class="search-container">
+                        <h1>AI Insights</h1>
+                    </div>
+                    <div class="header-action">
+                        <button id="set-budget-btn" class="btn">Set Budget</button>
+                    </div>
+                </nav>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Status and Initialization -->
+                    <div class="section">
+                        <div class="card" id="initialization-card">
+                            <h2>AI Assistant Status</h2>
+                            <div id="ai-status">
+                                <p>The AI features need to be initialized with your transaction data.</p>
+                                <button id="initialize-ml" class="btn">Initialize AI Assistant</button>
+                            </div>
+                            <div id="ai-loading" style="display: none;">
+                                <p>Loading AI models... This might take a few moments.</p>
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Container -->
+                    <div class="ml-features-container" style="display: none;">
+                        <!-- Feature Cards Row -->
+                        <div class="section">
+                            <h2>AI-Powered Insights</h2>
+                            <div class="ml-cards">
+                                <!-- Expense Prediction -->
+                                <div class="ml-card" id="predict-expenses">
+                                    <div class="ml-card-icon">📈</div>
+                                    <div class="ml-card-content">
+                                        <h3>Expense Prediction</h3>
+                                        <p>Predict your future expenses based on spending patterns</p>
+                                        <button class="btn-sm">View Predictions</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financial Planning Row -->
+                        <div class="section">
+                            <h2>Financial Planning</h2>
+                            <div class="ml-cards">
+                                <!-- Budget Recommendations -->
+                                <div class="ml-card" id="budget-recommendations">
+                                    <div class="ml-card-icon">📋</div>
+                                    <div class="ml-card-content">
+                                        <h3>Budget Recommendations</h3>
+                                        <p>Get personalized budget limits based on your spending history</p>
+                                        <button class="btn-sm">View Recommendations</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Containers -->
+                    <div id="results-container" class="section error-container" style="display: none;">
+                        <div class="results-header">
+                            <h2 id="results-title">Results</h2>
+                            <button class="btn-sm" id="close-results">Close</button>
+                        </div>
+                        <div class="results-content" id="results-content">
+                            <!-- Results will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Budget Setting Modal -->
+    <div id="budget-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-budget-modal">&times;</span>
+            <h2>Set Your Budget</h2>
+            <form id="budget-form">
+                <div class="form-group">
+                    <label for="total-budget">Total Budget Amount (₹)</label>
+                    <input type="number" id="total-budget" min="1" required placeholder="Enter your total budget">
+                </div>
+                
+                <div class="form-group">
+                    <label for="budget-duration">Budget Duration</label>
+                    <select id="budget-duration" required>
+                        <option value="1">1 month</option>
+                        <option value="3">3 months</option>
+                        <option value="6">6 months</option>
+                        <option value="12">12 months</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Categories</label>
+                    <div class="categories-container">
+                        <div class="category-checkboxes">
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-grocery" name="categories" value="Grocery" checked>
+                                <label for="cat-grocery">Grocery</label>
+                            </div>
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-food" name="categories" value="Food" checked>
+                                <label for="cat-food">Food</label>
+                            </div>
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-transportation" name="categories" value="Transportation" checked>
+                                <label for="cat-transportation">Transportation</label>
+                            </div>
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-shopping" name="categories" value="Shopping" checked>
+                                <label for="cat-shopping">Shopping</label>
+                            </div>
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-entertainment" name="categories" value="Entertainment" checked>
+                                <label for="cat-entertainment">Entertainment</label>
+                            </div>
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-bills" name="categories" value="Bills" checked>
+                                <label for="cat-bills">Bills</label>
+                            </div>
+                            <div class="category-item">
+                                <input type="checkbox" id="cat-health" name="categories" value="Health" checked>
+                                <label for="cat-health">Health</label>
+                            </div>
+                            <div id="custom-categories-container">
+                                <!-- Custom categories will be added here -->
+                            </div>
+                            <div class="add-category-action">
+                                <button type="button" id="add-category-btn" class="btn-sm">
+                                    <span class="button-icon">➕</span>
+                                    Add Custom Category
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="allocation-method">Budget Allocation Method</label>
+                    <select id="allocation-method" required>
+                        <option value="automatic">Automatic (Equal Distribution)</option>
+                        <option value="manual">Manual (Set Individual Amounts)</option>
+                    </select>
+                </div>
+                
+                <div class="manual-allocations" style="display: none;">
+                    <h3>Category Allocations</h3>
+                    <div id="category-allocations">
+                        <!-- Dynamic content will be added here by JavaScript -->
+                    </div>
+                    <div class="budget-summary">
+                        <p>Total Allocated: <span id="allocated-amount">₹0.00</span></p>
+                        <p>Remaining: <span id="remaining-amount">₹0.00</span></p>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span class="button-icon">💾</span>
+                        Save Budget
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/ml-insights.js"></script>
+</body>
+</html> 
