@@ -49,7 +49,13 @@ class NotesManager {
             });
     
             if (response.ok) {
+                // Instead of just fetching notes, also update the UI
+                const data = await response.json();
                 await this.fetchNotes(); // Reload notes from MongoDB
+                
+                // Show a success notification
+                this.showNotification("Note saved successfully!");
+                
                 return true;
             } else {
                 const errorData = await response.json();
@@ -814,6 +820,41 @@ class NotesManager {
             if (noteElement) {
                 this.setupNoteCardListeners(noteElement, note);
             }
+        });
+    }
+
+    // Add a notification helper method
+    showNotification(message, type = 'success') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <p>${message}</p>
+            <button class="close-notification">×</button>
+        `;
+        
+        // Add to the DOM
+        document.body.appendChild(notification);
+        
+        // Add animation to show the notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300); // Wait for the fade out animation
+        }, 3000);
+        
+        // Add close button event listener
+        notification.querySelector('.close-notification').addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
         });
     }
 }

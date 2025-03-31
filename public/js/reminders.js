@@ -31,6 +31,31 @@ class ReminderManager {
 
     async addReminder(reminder) {
         try {
+            // Create a loading indicator
+            const submitBtn = document.querySelector('#addReminderForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Saving...';
+            submitBtn.disabled = true;
+            
+            // Optimistically update the UI first
+            const tempId = 'temp-' + Date.now();
+            const tempReminder = { 
+                ...reminder, 
+                _id: tempId, 
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add to local array and render immediately
+            this.reminders.push(tempReminder);
+            this.renderReminders();
+            
+            // Hide the modal immediately
+            document.getElementById('addReminderModal').classList.remove('show');
+            
+            // Show saving notification
+            this.showNotification('Saving reminder...', 'info');
+            
+            // Now perform the actual API call in the background
             const response = await fetch('/api/reminders/create', {
                 method: 'POST',
                 headers: {
@@ -40,17 +65,34 @@ class ReminderManager {
             });
 
             const data = await response.json();
+            
+            // Reset button state
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            
             if (data.success) {
-                this.reminders.push(data.reminder);
-                this.renderReminders();
+                // Replace the temporary reminder with the real one
+                const index = this.reminders.findIndex(r => r._id === tempId);
+                if (index !== -1) {
+                    this.reminders[index] = data.reminder;
+                    this.renderReminders();
+                }
+                
+                this.showNotification('Reminder saved successfully!', 'success');
+                
                 if (reminder.enableNotification) {
                     this.scheduleNotification(data.reminder);
                 }
             } else {
+                // Remove the temporary reminder if there's an error
+                this.reminders = this.reminders.filter(r => r._id !== tempId);
+                this.renderReminders();
+                this.showNotification('Failed to save reminder: ' + data.message, 'error');
                 console.error('Failed to add reminder:', data.message);
             }
         } catch (error) {
             console.error('Error adding reminder:', error);
+            this.showNotification('An error occurred while saving the reminder', 'error');
         }
     }
 
@@ -443,6 +485,41 @@ class ReminderManager {
         modal.querySelector('h2').textContent = 'Edit Reminder';
         form.dataset.editingId = id;
         modal.classList.add('show');
+    }
+
+    // Add notification helper similar to the notes one
+    showNotification(message, type = 'success') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <p>${message}</p>
+            <button class="close-notification">×</button>
+        `;
+        
+        // Add to the DOM
+        document.body.appendChild(notification);
+        
+        // Add animation to show the notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300); // Wait for the fade out animation
+        }, 3000);
+        
+        // Add close button event listener
+        notification.querySelector('.close-notification').addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        });
     }
 }
 
