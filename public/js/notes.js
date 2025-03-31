@@ -18,13 +18,13 @@ class NotesManager {
         try {
             // Validate note data before sending
             if (!note.title || !note.type) {
-                alert("Title and type are required.");
+                this.showNotification("Title and type are required.", "error");
                 return false;
             }
 
             // For list type notes, ensure content is an array and not empty
             if (note.noteType === "list" && (!Array.isArray(note.content) || note.content.length === 0)) {
-                alert("Please add at least one item to the list.");
+                this.showNotification("Please add at least one item to the list.", "error");
                 return false;
             }
 
@@ -33,7 +33,7 @@ class NotesManager {
             if (note.noteType === "list") {
                 processedContent = Array.isArray(note.content) ? note.content.filter(item => item.trim() !== '') : [];
             } else if (note.noteType === "text") {
-                processedContent = note.content.trim();
+                processedContent = note.content ? note.content.trim() : '';
             }
 
             // Show a saving notification
@@ -54,7 +54,7 @@ class NotesManager {
             };
 
             // Add the temporary note to the UI
-            this.notes.push(tempNote);
+            this.notes.unshift(tempNote); // Add to beginning instead of end
             this.renderNotes();
 
             // Send the request to the server
@@ -73,14 +73,21 @@ class NotesManager {
             if (response.ok) {
                 // Replace the temporary note with the actual one from the server
                 const data = await response.json();
+                const savedNote = data.note || data;
                 
-                // Find and update the temporary note
-                const index = this.notes.findIndex(n => n._id === tempId);
-                if (index !== -1) {
-                    this.notes[index] = data.note || data;
+                // Remove the temporary note
+                this.notes = this.notes.filter(n => n._id !== tempId);
+                
+                // Add the saved note from the server to the beginning
+                if (savedNote && savedNote._id) {
+                    this.notes.unshift(savedNote);
                 } else {
-                    // If the temp note wasn't found, fetch all notes
+                    // If the server response doesn't have the expected format,
+                    // fetch all notes to ensure we have the correct data
                     await this.fetchNotes();
+                    // Show success notification after we're sure the data is loaded
+                    this.showNotification("Note saved successfully!");
+                    return true;
                 }
                 
                 // Update the UI with the updated note list
@@ -389,6 +396,8 @@ class NotesManager {
                 if (noteId) {
                     // Update existing note
                     try {
+                        this.showNotification("Updating note...", "info");
+                        
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -403,13 +412,18 @@ class NotesManager {
                         });
 
                         if (response.ok) {
-                            location.reload();
+                            // Close the modal
+                            document.getElementById("textNoteModal").classList.remove("show");
+                            
+                            // Fetch and render updated notes
+                            await this.fetchNotes();
+                            this.showNotification("Note updated successfully!");
                         } else {
-                            alert('Error updating note. Please try again.');
+                            this.showNotification('Error updating note. Please try again.', 'error');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
+                        this.showNotification('Error updating note. Please try again.', 'error');
                     }
                 } else {
                     // Create new note
@@ -441,13 +455,15 @@ class NotesManager {
                 const noteId = listNoteForm.querySelector('input[name="noteId"]')?.value;
 
                 if (items.length === 0) {
-                    alert("Please add at least one item to the list.");
+                    this.showNotification("Please add at least one item to the list.", "error");
                     return;
                 }
 
                 if (noteId) {
                     // Update existing note
                     try {
+                        this.showNotification("Updating note...", "info");
+                        
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -462,13 +478,18 @@ class NotesManager {
                         });
 
                         if (response.ok) {
-                            location.reload();
+                            // Close the modal
+                            document.getElementById("listNoteModal").classList.remove("show");
+                            
+                            // Fetch and render updated notes
+                            await this.fetchNotes();
+                            this.showNotification("Note updated successfully!");
                         } else {
-                            alert('Error updating note. Please try again.');
+                            this.showNotification('Error updating note. Please try again.', 'error');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
+                        this.showNotification('Error updating note. Please try again.', 'error');
                     }
                 } else {
                     // Create new note
@@ -502,6 +523,8 @@ class NotesManager {
                 if (noteId) {
                     // Update existing note
                     try {
+                        this.showNotification("Updating note...", "info");
+                        
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -517,13 +540,18 @@ class NotesManager {
                         });
 
                         if (response.ok) {
-                            location.reload();
+                            // Close the modal
+                            document.getElementById("imageNoteModal").classList.remove("show");
+                            
+                            // Fetch and render updated notes
+                            await this.fetchNotes();
+                            this.showNotification("Note updated successfully!");
                         } else {
-                            alert('Error updating note. Please try again.');
+                            this.showNotification('Error updating note. Please try again.', 'error');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
+                        this.showNotification('Error updating note. Please try again.', 'error');
                     }
                 } else {
                     // Create new note
@@ -537,6 +565,7 @@ class NotesManager {
 
                     if (success) {
                         imageNoteForm.reset();
+                        document.getElementById("imagePreview").innerHTML = '';
                         document.getElementById("imageNoteModal").classList.remove("show");
                     }
                 }
@@ -591,20 +620,24 @@ class NotesManager {
     renderNoteContent(note) {
         switch (note.noteType) {
             case 'text':
-                return `<p class="text-content">${note.content ? note.content.replace(/\n/g, '<br>') : ''}</p>`;
+                return `<p class="text-content">${note.content ? note.content.replace(/\n/g, '<br>') : ''}</p>
+                        <div class="note-type-tag">${note.type || 'Note'}</div>`;
             case 'list':
-                if (!Array.isArray(note.content) || note.content.length === 0) return '';
+                if (!Array.isArray(note.content) || note.content.length === 0) return `<div class="note-type-tag">${note.type || "List"}</div>`;
                 return `<ul class="list-content">
                     ${note.content.map(item => `<li>${item}</li>`).join('')}
-                </ul>`;
+                </ul>
+                <div class="note-type-tag">${note.type || 'List'}</div>`;
             case 'image':
                 return `
                     <div class="image-container">
                         ${note.image ? `<img src="${note.image}" alt="Note image">` : ''}
                         ${note.content ? `<div class="image-description">${note.content.replace(/\n/g, '<br>')}</div>` : ''}
-                    </div>`;
+                    </div>
+                    <div class="note-type-tag">${note.type || 'Image'}</div>`;
             default:
-                return `<p class="text-content">${note.content ? note.content : ''}</p>`;
+                return `<p class="text-content">${note.content ? note.content : ''}</p>
+                        <div class="note-type-tag">${note.type || 'Note'}</div>`;
         }
     }
 
