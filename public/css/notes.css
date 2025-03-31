@@ -810,10 +810,6 @@
     background-color: #e74c3c;
 }
 
-.notification.info {
-    background-color: #3498db;
-}
-
 .notification p {
     margin: 0;
     flex-grow: 1;
@@ -831,16 +827,4 @@
 
 .close-notification:hover {
     opacity: 0.8;
-}
-
-/* Add styling for note type tag */
-.note-type-tag {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 4px 10px;
-    background-color: rgba(70, 153, 125, 0.2);
-    color: #46997D;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
 } 
