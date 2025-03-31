@@ -810,6 +810,10 @@
     background-color: #e74c3c;
 }
 
+.notification.info {
+    background-color: #3498db;
+}
+
 .notification p {
     margin: 0;
     flex-grow: 1;
