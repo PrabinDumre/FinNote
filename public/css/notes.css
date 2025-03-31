@@ -228,11 +228,12 @@
     gap: 10px;
 }
 
-.note-content .image-container img {
+.note-content .image-container img.note-image {
     width: 100%;
     height: auto;
     border-radius: 4px;
-    margin-bottom: 8px;
+    object-fit: contain;
+    max-height: 300px;
 }
 
 .note-content .image-description {
@@ -881,10 +882,16 @@
 
 .image-upload-container {
     border: 2px dashed #ddd;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
     border-radius: 4px;
     margin-bottom: 10px;
+    background: #f8f8f8;
+}
+
+.image-upload-container input[type="file"] {
+    width: 100%;
+    cursor: pointer;
 }
 
 .note-tools {
@@ -1086,4 +1093,96 @@
 
 .close-notification:hover {
     opacity: 0.8;
+}
+
+/* Note Form Specific Styles */
+#textNoteForm,
+#listNoteForm,
+#imageNoteForm {
+    max-width: 100%;
+}
+
+.note-form-container {
+    padding: 15px;
+}
+
+#textDescription {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.list-items-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Responsive styles for note forms */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+    }
+
+    .list-items-container {
+        max-height: 250px;
+    }
+
+    .image-upload-container {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 98%;
+        margin: 5px auto;
+        padding: 12px;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+    }
+
+    .list-items-container {
+        max-height: 200px;
+        padding: 8px;
+    }
+
+    .list-item {
+        margin-bottom: 6px;
+    }
+
+    .list-item .item-text {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    .image-upload-container {
+        padding: 6px;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .form-group textarea {
+        min-height: 80px;
+    }
+
+    .list-items-container {
+        max-height: 150px;
+    }
 } 

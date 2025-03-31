@@ -154,22 +154,28 @@ class NotesManager {
         });
     }
 
-    // Image upload preview
+    // Image upload handler
     const imageUpload = document.getElementById('imageUpload');
-    const imagePreview = document.getElementById('imagePreview');
-
-        if (imageUpload && imagePreview) {
-            imageUpload.addEventListener('change', (e) => {
+    if (imageUpload) {
+        imageUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                    reader.onload = (e) => {
-                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-                    };
-                    reader.readAsDataURL(file);
+                // Validate file size and type if needed
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    alert('File size should not exceed 5MB');
+                    imageUpload.value = '';
+                    return;
                 }
-            });
-        }
+                
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file');
+                    imageUpload.value = '';
+                    return;
+                }
+            }
+        });
+    }
 
         // Form submissions
         this.setupFormHandlers();
@@ -459,12 +465,24 @@ class NotesManager {
                 const title = document.getElementById("imageNoteTitle").value;
                 const type = document.getElementById("imageNoteType").value;
                 const description = document.getElementById("imageDescription").value;
-                const image = document.querySelector("#imagePreview img")?.src || "";
-                const noteId = imageNoteForm.querySelector('input[name="noteId"]')?.value;
+                const imageFile = document.getElementById("imageUpload").files[0];
 
-                if (noteId) {
-                    // Update existing note
-                    try {
+                if (!imageFile) {
+                    alert("Please select an image");
+                    return;
+                }
+
+                try {
+                    // Convert image to base64
+                    const base64Image = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(imageFile);
+                    });
+
+                    if (imageNoteForm.querySelector('input[name="noteId"]')) {
+                        // Update existing note
+                        const noteId = imageNoteForm.querySelector('input[name="noteId"]').value;
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -475,7 +493,7 @@ class NotesManager {
                                 content: description,
                                 type,
                                 noteType: "image",
-                                image
+                                image: base64Image
                             })
                         });
 
@@ -484,24 +502,24 @@ class NotesManager {
                         } else {
                             alert('Error updating note. Please try again.');
                         }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
-                    }
-                } else {
-                    // Create new note
-                    const success = await this.saveNoteToDB({
-                        title,
-                        content: description,
-                        type,
-                        noteType: "image",
-                        image
-                    });
+                    } else {
+                        // Create new note
+                        const success = await this.saveNoteToDB({
+                            title,
+                            content: description,
+                            type,
+                            noteType: "image",
+                            image: base64Image
+                        });
 
-                    if (success) {
-                        imageNoteForm.reset();
-                        document.getElementById("imageNoteModal").classList.remove("show");
+                        if (success) {
+                            imageNoteForm.reset();
+                            document.getElementById("imageNoteModal").classList.remove("show");
+                        }
                     }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error saving image note. Please try again.');
                 }
             });
         }
@@ -556,15 +574,15 @@ class NotesManager {
             case 'text':
                 return `<p class="text-content">${note.content ? note.content.replace(/\n/g, '<br>') : ''}</p>`;
             case 'list':
-                if (!Array.isArray(note.content) || note.content.length === 0) return '';
+                if (!Array.isArray(note.content)) return '';
                 return `<ul class="list-content">
                     ${note.content.map(item => `<li>${item}</li>`).join('')}
                 </ul>`;
             case 'image':
                 return `
                     <div class="image-container">
-                        ${note.image ? `<img src="${note.image}" alt="Note image">` : ''}
-                        ${note.content ? `<div class="image-description">${note.content.replace(/\n/g, '<br>')}</div>` : ''}
+                        ${note.image ? `<img src="${note.image}" alt="Note image" class="note-image">` : ''}
+                        ${note.content ? `<p class="image-description">${note.content.replace(/\n/g, '<br>')}</p>` : ''}
                     </div>`;
             default:
                 return `<p class="text-content">${note.content ? note.content : ''}</p>`;
@@ -1110,7 +1128,7 @@ function renderNoteContent(note) {
         case 'image':
             return `
                 <div class="image-container">
-                    ${note.image ? `<img src="${note.image}" alt="Note image">` : ''}
+                    ${note.image ? `<img src="${note.image}" alt="Note image" class="note-image">` : ''}
                     ${note.content ? `<p class="image-description">${note.content.replace(/\n/g, '<br>')}</p>` : ''}
                 </div>`;
         default:

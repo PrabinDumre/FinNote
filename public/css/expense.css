@@ -1,0 +1,94 @@
+/* Expense Form Specific Styles */
+.expense-form-container {
+    max-width: 100%;
+    padding: 15px;
+}
+
+.budget-form,
+.give-money-form,
+.take-money-form,
+.expense-form {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Responsive styles for expense forms */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-group {
+        width: 100% !important;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .form-control {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .expense-form-container {
+        padding: 10px;
+    }
+
+    .modal-content {
+        width: 98%;
+        margin: 5px auto;
+        padding: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-control {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .form-row {
+        margin-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+} 
