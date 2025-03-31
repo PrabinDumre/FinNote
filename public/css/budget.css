@@ -401,4 +401,234 @@
 
 [data-theme="dark"] .no-budget-message {
     background-color: var(--dark-background-secondary);
+}
+
+/* Responsive Design Rules */
+@media (max-width: 1200px) {
+    .modal-content {
+        width: 95%;
+        margin: 3vh auto;
+    }
+    
+    .category-checkboxes {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 10px;
+    }
+    
+    .category-allocation input {
+        width: 130px;
+    }
+}
+
+@media (max-width: 992px) {
+    .modal-content {
+        padding: 15px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .form-group input[type="number"],
+    .form-group input[type="text"],
+    .form-group select {
+        padding: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .category-checkboxes {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+    }
+    
+    .category-allocation {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .category-allocation input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 98%;
+        margin: 2vh auto;
+        padding: 12px;
+    }
+    
+    .modal-header {
+        margin-bottom: 15px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .close-btn {
+        font-size: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .category-checkboxes {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 6px;
+    }
+    
+    .category-item {
+        font-size: 0.9rem;
+    }
+    
+    .category-item input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .manual-allocations {
+        padding: 12px;
+    }
+    
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-secondary {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-content {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+    }
+    
+    .modal-header {
+        padding-bottom: 8px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .close-btn {
+        font-size: 18px;
+    }
+    
+    .form-group label {
+        font-size: 0.85rem;
+    }
+    
+    .form-group input[type="number"],
+    .form-group input[type="text"],
+    .form-group select {
+        padding: 6px;
+        font-size: 0.9rem;
+    }
+    
+    .category-checkboxes {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .category-item {
+        font-size: 0.85rem;
+    }
+    
+    .category-item input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .manual-allocations {
+        padding: 10px;
+    }
+    
+    .category-allocation {
+        margin-bottom: 8px;
+    }
+    
+    .budget-summary {
+        margin-top: 12px;
+        padding-top: 12px;
+    }
+    
+    .budget-summary p {
+        font-size: 0.9rem;
+    }
+    
+    .form-actions {
+        padding: 12px 0;
+    }
+    
+    .btn-primary {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .btn-secondary {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Landscape Mode Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .modal-content {
+        margin: 1vh auto;
+        max-height: 98vh;
+    }
+    
+    .form-actions {
+        position: relative;
+        padding: 10px 0;
+    }
+}
+
+/* High-DPI Screen Adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .modal-content {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-primary {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .modal {
+        position: static;
+        background: none;
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .modal-content {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .close-btn,
+    .form-actions {
+        display: none;
+    }
+    
+    .category-checkboxes {
+        break-inside: avoid;
+    }
 } 

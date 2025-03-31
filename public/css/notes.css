@@ -284,18 +284,277 @@
     font-size: 1.1rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Responsive Design Rules */
+@media (max-width: 1200px) {
     .notes-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 15px;
         padding: 15px;
     }
+    
+    .note-card {
+        min-height: 140px;
+    }
+    
+    .note-content {
+        max-height: 250px;
+    }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 992px) {
+    .search-container {
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .search-container input {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .date-scroll {
+        padding: 15px;
+    }
+    
+    .date-item {
+        min-width: 70px;
+        padding: 8px;
+    }
+    
+    .date-item .day {
+        font-size: 18px;
+    }
+    
+    .date-item .month {
+        font-size: 12px;
+    }
+    
+    .notes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .note-card {
+        padding: 12px;
+        min-height: 130px;
+    }
+    
+    .note-header h3 {
+        font-size: 1rem;
+    }
+    
+    .note-content {
+        max-height: 220px;
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        padding: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .search-container input {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .date-scroll {
+        padding: 12px;
+    }
+    
+    .date-container {
+        gap: 8px;
+    }
+    
+    .date-item {
+        min-width: 60px;
+        padding: 6px;
+    }
+    
+    .date-item .day {
+        font-size: 16px;
+    }
+    
+    .date-item .month {
+        font-size: 11px;
+    }
+    
+    .notes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .note-card {
+        padding: 10px;
+        min-height: 120px;
+    }
+    
+    .note-header {
+        margin-bottom: 8px;
+    }
+    
+    .note-header h3 {
+        font-size: 0.95rem;
+    }
+    
+    .three-dots-btn {
+        font-size: 18px;
+        padding: 3px 8px;
+    }
+    
+    .dropdown-content {
+        min-width: 160px;
+    }
+    
+    .note-content {
+        max-height: 200px;
+        padding: 0 8px;
+        margin-top: 3px;
+    }
+    
+    .note-content .text-content {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-container {
+        padding: 10px;
+    }
+    
+    .search-container input {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    .search-container .search-icon {
+        font-size: 16px;
+    }
+    
+    .date-scroll {
+        padding: 10px;
+    }
+    
+    .date-container {
+        gap: 6px;
+    }
+    
+    .date-item {
+        min-width: 50px;
+        padding: 5px;
+    }
+    
+    .date-item .day {
+        font-size: 14px;
+    }
+    
+    .date-item .month {
+        font-size: 10px;
+    }
+    
     .notes-grid {
         grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .note-card {
+        padding: 8px;
+        min-height: 110px;
+    }
+    
+    .note-header {
+        margin-bottom: 6px;
+    }
+    
+    .note-header h3 {
+        font-size: 0.9rem;
+    }
+    
+    .three-dots-btn {
+        font-size: 16px;
+        padding: 2px 6px;
+    }
+    
+    .dropdown-content {
+        min-width: 140px;
+        padding: 6px 0;
+    }
+    
+    .dropdown-content button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .note-content {
+        max-height: 180px;
+        padding: 0 6px;
+        margin-top: 2px;
+    }
+    
+    .note-content .text-content {
+        font-size: 0.85rem;
+    }
+    
+    .note-card.pinned::before {
+        font-size: 14px;
+        top: 3px;
+        right: 3px;
+    }
+}
+
+/* Landscape Mode Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .notes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .note-content {
+        max-height: 150px;
+    }
+}
+
+/* High-DPI Screen Adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .note-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .note-card:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .search-container,
+    .date-scroll,
+    .add-note-btn,
+    .note-actions,
+    .dropdown-content {
+        display: none;
+    }
+    
+    .notes-grid {
+        display: block;
+        padding: 0;
+    }
+    
+    .note-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+    
+    .note-card:hover {
+        transform: none;
+        box-shadow: none;
     }
 }
 

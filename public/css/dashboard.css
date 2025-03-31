@@ -1194,6 +1194,107 @@ h1 {
     flex-direction: column;
     gap: 40px;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.main-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    padding: 15px;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.hamburger-line {
+    width: 24px;
+    height: 2px;
+    background-color: #333;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 968px) {
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .side-navbar {
+        transform: translateX(-100%);
+        width: 250px;
+        padding: 60px 20px 20px;
+    }
+
+    .side-navbar.show {
+        transform: translateX(0);
+    }
+
+    .main-container {
+        margin-left: 0;
+    }
+
+    /* Hamburger menu animation */
+    .hamburger-menu.active .hamburger-line:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+}
+
+/* Menu Overlay */
+.menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.menu-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+@media (max-width: 576px) {
+    .side-navbar {
+        width: 280px;
+    }
 }
 
 .user-welcome {
@@ -1265,12 +1366,6 @@ h1 {
     font-size: 20px;
 }
 
-.main-container {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
 /* Update existing styles */
 body {
     margin: 0;
@@ -1283,49 +1378,6 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 968px) {
-    .side-navbar {
-        width: 70px;
-        padding: 20px 10px;
-    }
-
-    .welcome-text,
-    .nav-link span:not(.nav-icon) {
-        display: none;
-    }
-
-    .nav-link {
-        justify-content: center;
-        padding: 12px;
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        font-size: 24px;
-    }
-}
-
-@media (max-width: 576px) {
-    .layout-wrapper {
-        flex-direction: column;
-    }
-
-    .side-navbar {
-        width: 100%;
-        flex-direction: row;
-        padding: 10px;
-        gap: 20px;
-    }
-
-    .nav-links {
-        flex-direction: row;
-        justify-content: space-around;
-        width: 100%;
-    }
 }
 
 /* Remove settings button */
@@ -3321,12 +3373,12 @@ body {
 
 /* Login Notification Popup */
 .login-notification {
-    position: absolute;
-    top: 25px; /* Moved up by 20px (0.5cm) from 45px */
-    right: auto;
-    left: 79%;
-    transform: translateX(calc(-50% - 80px)) translateY(-10px); /* Added -80px (2cm) to move left */
-    width: 600px;
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     padding: 12px 15px;
@@ -3340,55 +3392,33 @@ body {
 
 .login-notification.show {
     opacity: 1;
-    transform: translateX(calc(-50% - 80px)) translateY(0);
     visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .notification-content {
-    white-space: normal; /* Changed from nowrap to normal to allow text wrapping */
-    overflow: visible; /* Changed from hidden to visible */
+    white-space: normal;
+    overflow: visible;
     font-size: 14px;
     line-height: 1.5;
     color: #333;
+    text-align: center;
 }
 
-.notification-progress {
-    height: 3px;
-    background: rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin-top: 8px;
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.progress-bar-indicator {
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(to right, #46997D, #40E0D0);
-    animation: progress-animation 5s linear forwards;
-}
-
-@keyframes progress-animation {
-    from { width: 100%; }
-    to { width: 0%; }
-}
-
-.login-notification.success {
-    background: linear-gradient(to right, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.2));
-    border-left: 4px solid #2ecc71;
-}
-
-.login-notification.warning {
-    background: linear-gradient(to right, rgba(241, 196, 15, 0.1), rgba(241, 196, 15, 0.2));
-    border-left: 4px solid #f39c12;
-}
-
+/* Responsive adjustments for notification */
 @media (max-width: 768px) {
     .login-notification {
         width: 90%;
-        max-width: 550px;
-        right: auto;
-        left: 5%; /* Center the popup */
+        max-width: 500px;
+        top: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-notification {
+        width: 95%;
+        max-width: none;
+        top: 10px;
     }
 }
 
@@ -3473,4 +3503,239 @@ body {
 .progress-text {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
+}
+
+/* Responsive Design Rules */
+@media (max-width: 1400px) {
+    .dashboard-container {
+        max-width: 95%;
+        padding: 15px;
+    }
+    
+    .content-wrapper {
+        gap: 20px;
+    }
+    
+    .feature-cards {
+        width: 45%;
+        max-width: 45%;
+    }
+    
+    .budget-insights-box {
+        width: 55%;
+        max-width: 55%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .feature-card {
+        padding: 30px;
+    }
+    
+    .feature-card .card-icon {
+        font-size: 50px;
+        padding: 15px;
+    }
+    
+    .feature-card h2 {
+        font-size: 22px;
+    }
+    
+    .feature-card p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 992px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+    
+    .feature-cards {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .budget-insights-box {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .feature-card {
+        padding: 25px;
+    }
+    
+    .recent-activity {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+    
+    .top-nav {
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    .tab-navigation {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-bottom: 5px;
+    }
+    
+    .tab-btn {
+        font-size: 16px;
+        padding: 8px 15px;
+    }
+    
+    .feature-card {
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    .feature-card .card-icon {
+        font-size: 40px;
+        padding: 12px;
+    }
+    
+    .feature-card h2 {
+        font-size: 20px;
+    }
+    
+    .feature-card p {
+        font-size: 13px;
+    }
+    
+    .recent-activity {
+        padding: 15px;
+    }
+    
+    .activity-item {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        background: linear-gradient(135deg, #7FFFD4, #40E0D0);
+    }
+    
+    .dashboard-container {
+        padding: 5px;
+    }
+    
+    .top-nav {
+        gap: 10px;
+    }
+    
+    .search-bar input {
+        padding: 8px 70px 8px 15px;
+        font-size: 14px;
+    }
+    
+    .search-bar button {
+        font-size: 16px;
+    }
+    
+    .search-bar .filter-icon {
+        right: 40px;
+    }
+    
+    .search-bar .search-icon {
+        right: 10px;
+    }
+    
+    .tab-navigation {
+        gap: 5px;
+    }
+    
+    .tab-btn {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+    
+    .feature-card {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .feature-card .card-icon {
+        font-size: 35px;
+        padding: 10px;
+    }
+    
+    .feature-card h2 {
+        font-size: 18px;
+    }
+    
+    .feature-card p {
+        font-size: 12px;
+    }
+    
+    .recent-activity {
+        padding: 10px;
+    }
+    
+    .recent-activity h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .activity-item {
+        padding: 6px;
+    }
+    
+    .activity-icon {
+        font-size: 16px;
+    }
+}
+
+/* Landscape Mode Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .dashboard-container {
+        padding: 10px;
+    }
+    
+    .feature-card {
+        padding: 15px;
+    }
+    
+    .recent-activity {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+}
+
+/* High-DPI Screen Adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .feature-card {
+        border-width: 1px;
+    }
+    
+    .tab-btn.active::after {
+        height: 2px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .top-nav,
+    .tab-navigation,
+    .recent-activity {
+        display: none;
+    }
+    
+    .feature-card {
+        break-inside: avoid;
+        border: 1px solid #ccc;
+        box-shadow: none;
+    }
 }
