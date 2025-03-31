@@ -18,13 +18,13 @@ class NotesManager {
         try {
             // Validate note data before sending
             if (!note.title || !note.type) {
-                alert("Title and type are required.");
+                this.showNotification("Title and type are required.", "error");
                 return false;
             }
 
             // For list type notes, ensure content is an array and not empty
             if (note.noteType === "list" && (!Array.isArray(note.content) || note.content.length === 0)) {
-                alert("Please add at least one item to the list.");
+                this.showNotification("Please add at least one item to the list.", "error");
                 return false;
             }
 
@@ -49,22 +49,34 @@ class NotesManager {
             });
     
             if (response.ok) {
-                // Instead of just fetching notes, also update the UI
+                // Get the new note data
                 const data = await response.json();
-                await this.fetchNotes(); // Reload notes from MongoDB
                 
-                // Show a success notification
+                // Since we already have an optimistic UI update in place,
+                // we'll just need to replace the temporary note with the real one
+                const tempId = note.tempId;
+                if (tempId) {
+                    const index = this.notes.findIndex(n => n._id === tempId);
+                    if (index !== -1) {
+                        this.notes[index] = data.note;
+                    }
+                }
+                
+                // Refresh the notes data from the server to ensure everything is in sync
+                await this.fetchNotes();
+                
+                // Show success notification
                 this.showNotification("Note saved successfully!");
                 
                 return true;
             } else {
                 const errorData = await response.json();
-                alert(errorData.message || "Error adding note.");
+                this.showNotification(errorData.message || "Error adding note.", "error");
                 return false;
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("Failed to save note. Please try again.");
+            this.showNotification("Failed to save note. Please try again.", "error");
             return false;
         }
     }
@@ -349,9 +361,36 @@ class NotesManager {
                 const type = document.getElementById("textNoteType").value;
                 const noteId = textNoteForm.querySelector('input[name="noteId"]')?.value;
 
+                // Show loading state
+                const submitBtn = textNoteForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+
+                // Close the modal immediately for better UX
+                document.getElementById("textNoteModal").classList.remove("show");
+                
+                // Show saving notification
+                this.showNotification('Saving note...', 'info');
+
                 if (noteId) {
                     // Update existing note
                     try {
+                        // Optimistic UI update
+                        const noteIndex = this.notes.findIndex(note => note._id === noteId);
+                        if (noteIndex !== -1) {
+                            // Create a temporary updated version of the note
+                            const updatedNote = { 
+                                ...this.notes[noteIndex],
+                                title, 
+                                content,
+                                type,
+                                updatedAt: new Date().toISOString()
+                            };
+                            this.notes[noteIndex] = updatedNote;
+                            this.renderNotes();
+                        }
+
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -365,27 +404,63 @@ class NotesManager {
                             })
                         });
 
+                        // Reset button state
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+
                         if (response.ok) {
-                            location.reload();
+                            // Get the updated note and refresh the UI
+                            const result = await response.json();
+                            await this.fetchNotes();
+                            this.showNotification('Note updated successfully!');
                         } else {
-                            alert('Error updating note. Please try again.');
+                            const errorData = await response.json();
+                            this.showNotification(errorData.message || 'Error updating note. Please try again.', 'error');
+                            // Revert optimistic update
+                            await this.fetchNotes();
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        this.showNotification('Error updating note. Please try again.', 'error');
+                        await this.fetchNotes();
                     }
                 } else {
-                    // Create new note
+                    // Create new note - add optimistic UI update
+                    const tempId = 'temp-' + Date.now();
+                    const tempNote = {
+                        _id: tempId,
+                        title,
+                        content,
+                        type,
+                        noteType: "text",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    // Add to array and render immediately
+                    this.notes.unshift(tempNote);
+                    this.renderNotes();
+
                     const success = await this.saveNoteToDB({
                         title,
                         content,
                         type,
-                        noteType: "text"
+                        noteType: "text",
+                        tempId: tempId // Pass the tempId for correlation
                     });
+
+                    // Reset button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
 
                     if (success) {
                         textNoteForm.reset();
-                        document.getElementById("textNoteModal").classList.remove("show");
+                    } else {
+                        // Remove the temporary note if there was an error
+                        this.notes = this.notes.filter(n => n._id !== tempId);
+                        this.renderNotes();
                     }
                 }
             });
@@ -404,13 +479,40 @@ class NotesManager {
                 const noteId = listNoteForm.querySelector('input[name="noteId"]')?.value;
 
                 if (items.length === 0) {
-                    alert("Please add at least one item to the list.");
+                    this.showNotification("Please add at least one item to the list.", "error");
                     return;
                 }
+
+                // Show loading state
+                const submitBtn = listNoteForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+
+                // Close the modal immediately for better UX
+                document.getElementById("listNoteModal").classList.remove("show");
+                
+                // Show saving notification
+                this.showNotification('Saving note...', 'info');
 
                 if (noteId) {
                     // Update existing note
                     try {
+                        // Optimistic UI update
+                        const noteIndex = this.notes.findIndex(note => note._id === noteId);
+                        if (noteIndex !== -1) {
+                            // Create a temporary updated version of the note
+                            const updatedNote = { 
+                                ...this.notes[noteIndex],
+                                title, 
+                                content: items,
+                                type,
+                                updatedAt: new Date().toISOString()
+                            };
+                            this.notes[noteIndex] = updatedNote;
+                            this.renderNotes();
+                        }
+
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -424,28 +526,64 @@ class NotesManager {
                             })
                         });
 
+                        // Reset button state
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+
                         if (response.ok) {
-                            location.reload();
+                            // Get the updated note and refresh the UI
+                            const result = await response.json();
+                            await this.fetchNotes();
+                            this.showNotification('Note updated successfully!');
                         } else {
-                            alert('Error updating note. Please try again.');
+                            const errorData = await response.json();
+                            this.showNotification(errorData.message || 'Error updating note. Please try again.', 'error');
+                            // Revert optimistic update
+                            await this.fetchNotes();
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        this.showNotification('Error updating note. Please try again.', 'error');
+                        await this.fetchNotes();
                     }
                 } else {
-                    // Create new note
+                    // Create new note with optimistic UI update
+                    const tempId = 'temp-' + Date.now();
+                    const tempNote = {
+                        _id: tempId,
+                        title,
+                        content: items,
+                        type,
+                        noteType: "list",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    // Add to array and render immediately
+                    this.notes.unshift(tempNote);
+                    this.renderNotes();
+
                     const success = await this.saveNoteToDB({
                         title,
                         content: items,
                         type,
-                        noteType: "list"
+                        noteType: "list",
+                        tempId: tempId // Pass the tempId for correlation
                     });
+
+                    // Reset button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
 
                     if (success) {
                         listNoteForm.reset();
                         document.getElementById("listItems").innerHTML = '';
-                        document.getElementById("listNoteModal").classList.remove("show");
+                    } else {
+                        // Remove the temporary note if there was an error
+                        this.notes = this.notes.filter(n => n._id !== tempId);
+                        this.renderNotes();
                     }
                 }
             });
@@ -462,9 +600,37 @@ class NotesManager {
                 const image = document.querySelector("#imagePreview img")?.src || "";
                 const noteId = imageNoteForm.querySelector('input[name="noteId"]')?.value;
 
+                // Show loading state
+                const submitBtn = imageNoteForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+
+                // Close the modal immediately for better UX
+                document.getElementById("imageNoteModal").classList.remove("show");
+                
+                // Show saving notification
+                this.showNotification('Saving note...', 'info');
+
                 if (noteId) {
                     // Update existing note
                     try {
+                        // Optimistic UI update
+                        const noteIndex = this.notes.findIndex(note => note._id === noteId);
+                        if (noteIndex !== -1) {
+                            // Create a temporary updated version of the note
+                            const updatedNote = { 
+                                ...this.notes[noteIndex],
+                                title, 
+                                content: description,
+                                type,
+                                image,
+                                updatedAt: new Date().toISOString()
+                            };
+                            this.notes[noteIndex] = updatedNote;
+                            this.renderNotes();
+                        }
+
                         const response = await fetch(`/notes/update/${noteId}`, {
                             method: 'PUT',
                             headers: {
@@ -479,28 +645,66 @@ class NotesManager {
                             })
                         });
 
+                        // Reset button state
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+
                         if (response.ok) {
-                            location.reload();
+                            // Get the updated note and refresh the UI
+                            const result = await response.json();
+                            await this.fetchNotes();
+                            this.showNotification('Note updated successfully!');
                         } else {
-                            alert('Error updating note. Please try again.');
+                            const errorData = await response.json();
+                            this.showNotification(errorData.message || 'Error updating note. Please try again.', 'error');
+                            // Revert optimistic update
+                            await this.fetchNotes();
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error updating note. Please try again.');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        this.showNotification('Error updating note. Please try again.', 'error');
+                        await this.fetchNotes();
                     }
                 } else {
-                    // Create new note
+                    // Create new note with optimistic UI update
+                    const tempId = 'temp-' + Date.now();
+                    const tempNote = {
+                        _id: tempId,
+                        title,
+                        content: description,
+                        type,
+                        noteType: "image",
+                        image,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+
+                    // Add to array and render immediately
+                    this.notes.unshift(tempNote);
+                    this.renderNotes();
+
                     const success = await this.saveNoteToDB({
                         title,
                         content: description,
                         type,
                         noteType: "image",
-                        image
+                        image,
+                        tempId: tempId // Pass the tempId for correlation
                     });
+
+                    // Reset button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
 
                     if (success) {
                         imageNoteForm.reset();
-                        document.getElementById("imageNoteModal").classList.remove("show");
+                        document.getElementById("imagePreview").innerHTML = '';
+                    } else {
+                        // Remove the temporary note if there was an error
+                        this.notes = this.notes.filter(n => n._id !== tempId);
+                        this.renderNotes();
                     }
                 }
             });
