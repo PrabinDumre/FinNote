@@ -84,8 +84,8 @@ FinNote is a comprehensive personal finance management application that helps us
 ### Installation Steps
 1. Clone the repository
    ```bash
-   git clone https://github.com/PrabinDumre/Myfinnote.git
-   cd Myfinnote
+   git clone https://github.com/PrabinDumre/finnote.git
+   cd finnote
    ```
 
 2. Install dependencies
@@ -96,7 +96,7 @@ FinNote is a comprehensive personal finance management application that helps us
 3. Create .env file (use .env.example as reference)
    ```
    PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/budget-buddy
+   MONGODB_URI=mongodb://localhost:27017/finnote
    SESSION_SECRET=your_session_secret
    EMAIL_USER=your_email@gmail.com
    EMAIL_PASS=your_email_password
