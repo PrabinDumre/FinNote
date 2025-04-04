@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Personal Finance Manager</title>
+    <title>Login - FinNote</title>
     <style>
         * {
             margin: 0;
@@ -17,128 +17,326 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #000;
+            background: #75FFD1;
         }
 
-        .login-container {
-            position: relative;
-            width: 400px;
-            background: #111;
-            border-radius: 20px;
+        .container {
+            width: 1000px;
+            height: 600px;
+            background: #fff;
+            border-radius: 30px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-side {
+            flex: 1;
+            background: #fff;
             padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        .login-container h2 {
-            color: #fff;
+        .logo-text {
+            font-size: 3.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .logo-subtitle {
+            color: rgba(51, 51, 51, 0.8);
+            font-size: 1em;
             text-align: center;
-            font-size: 2em;
-            margin-bottom: 30px;
+        }
+
+        .logo-image {
+            width: 200px;
+            height: 200px;
+            margin: 40px 0;
+            transform: rotate(-15deg);
+        }
+
+        .right-side {
+            flex: 1;
+            background: rgba(117, 255, 209, 0.2);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .login-title {
+            font-size: 2.5em;
+            color: rgba(51, 51, 51, 0.8);
+            margin-bottom: 40px;
+            font-weight: 500;
         }
 
         .input-group {
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .input-group input {
             width: 100%;
             padding: 15px;
-            background: transparent;
             border: none;
-            border-bottom: 2px solid #555;
-            color: #fff;
+            background: #fff;
+            border-radius: 10px;
             font-size: 1em;
-            outline: none;
-            transition: 0.5s;
+            color: #333;
+            padding-right: 40px;
         }
 
-        .input-group label {
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+
+        .input-icon {
             position: absolute;
-            left: 0;
-            padding: 15px;
-            pointer-events: none;
-            color: #555;
-            font-size: 1em;
-            transition: 0.5s;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            cursor: pointer;
         }
 
-        .input-group input:valid ~ label,
-        .input-group input:focus ~ label {
-            transform: translateY(-20px);
-            font-size: 0.8em;
-            color: #45f3ff;
+        .forgot-password {
+            text-align: right;
+            margin: -15px 0 25px;
         }
 
-        .input-group input:valid,
-        .input-group input:focus {
-            border-bottom-color: #45f3ff;
+        .forgot-password a {
+            color: rgba(51, 51, 51, 0.6);
+            text-decoration: none;
+            font-size: 0.9em;
         }
 
-        .submit-btn {
+        .login-btn {
             width: 100%;
             padding: 15px;
-            background: #45f3ff;
+            background: #46997D;
             border: none;
-            outline: none;
-            border-radius: 40px;
-            cursor: pointer;
+            border-radius: 10px;
+            color: #fff;
             font-size: 1em;
-            font-weight: 600;
-            color: #111;
-            transition: 0.5s;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .submit-btn:hover {
-            background: #1dcfdf;
+        .login-btn:hover {
+            background: #3a7f68;
         }
 
-        .register-link {
+        .signup-link {
             text-align: center;
-            margin-top: 20px;
+            margin: 25px 0;
+            color: rgba(51, 51, 51, 0.6);
         }
 
-        .register-link p {
-            color: #555;
-        }
-
-        .register-link a {
-            color: #45f3ff;
+        .signup-link a {
+            color: #46997D;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
         }
 
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message {
-            color: #ff4545;
+        .help-link {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 15px 0;
+        }
+
+        .help-button {
+            background: none;
+            border: none;
+            color: #46997D;
+            font-size: 0.9em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0 auto;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .help-button:hover {
+            background: rgba(70, 153, 125, 0.1);
+        }
+
+        .quote-text {
+            text-align: center;
+            color: rgba(51, 51, 51, 0.6);
+            font-style: italic;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-top: auto;
+            padding: 0 20px;
+        }
+
+        /* Guide Container */
+        .guide-container {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%) translateX(100%);
+            width: 320px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            color: #333;
+            border: 1px solid rgba(70, 153, 125, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .guide-container.visible {
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .guide-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(117, 255, 209, 0.1);
+            border-radius: 15px;
+        }
+
+        .guide-section h3 {
+            color: #46997D;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-section ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .guide-section li {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .guide-section li:before {
+            content: "→";
+            color: #46997D;
+            position: absolute;
+            left: -20px;
+        }
+
+        .guide-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #46997D;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .guide-close:hover {
+            background: rgba(70, 153, 125, 0.1);
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        {{#if error}}
-        <div class="error-message">{{error}}</div>
-        {{/if}}
-        <form action="/login" method="POST">
-            <div class="input-group">
-                <input type="email" name="email" required>
-                <label>Email</label>
+    <div class="container">
+        <div class="left-side">
+            <h1 class="logo-text">FinNote</h1>
+            <p class="logo-subtitle">Effortlessly Track Expenses & Organize Notes</p>
+            <img src="/images/logo.png" alt="FinNote Logo" class="logo-image">
+        </div>
+        <div class="right-side">
+            <h2 class="login-title">LOG IN</h2>
+            <form action="/login" method="POST">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="YOUR EMAIL" required>
+                    <span class="input-icon">✉️</span>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <span class="input-icon">👁️ 🔒</span>
+                </div>
+                <div class="forgot-password">
+                    <a href="/forgot-password">Forgot Password?</a>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <div class="signup-link">
+                Don't have an account? <a href="/register">Sign Up</a>
             </div>
-            <div class="input-group">
-                <input type="password" name="password" required>
-                <label>Password</label>
+            <div class="help-link">
+                <button class="help-button" id="guideToggle">
+                    <span>❔</span> Need Help?
+                </button>
             </div>
-            <button type="submit" class="submit-btn">Login</button>
-            <div class="register-link">
-                <p>Don't have an account? <a href="/register">Register</a></p>
-            </div>
-        </form>
+            <p class="quote-text">
+                "Track your money, plan with ease, and build a future you'll love—because smart budgeting today means financial freedom tomorrow!"
+            </p>
+        </div>
     </div>
+
+    <!-- Guide Container -->
+    <div class="guide-container" id="guideContainer">
+        <button class="guide-close" id="guideClose">×</button>
+        <div class="guide-section">
+            <h3>🔐 Getting Started</h3>
+            <ul>
+                <li>Enter your email and password</li>
+                <li>Click Login to access your dashboard</li>
+                <li>New users should click Sign Up below</li>
+            </ul>
+        </div>
+        <div class="guide-section">
+            <h3>📝 Sign Up Steps</h3>
+            <ul>
+                <li>Enter your username</li>
+                <li>Provide a valid email address</li>
+                <li>Click Send OTP and check your inbox</li>
+                <li>Enter the OTP in the validation field</li>
+                <li>Set a secure password</li>
+                <li>Click Sign Up to complete registration</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const guideToggle = document.getElementById('guideToggle');
+        const guideContainer = document.getElementById('guideContainer');
+        const guideClose = document.getElementById('guideClose');
+
+        guideToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            guideContainer.classList.add('visible');
+        });
+
+        guideClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            guideContainer.classList.remove('visible');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!guideContainer.contains(e.target) && e.target !== guideToggle) {
+                guideContainer.classList.remove('visible');
+            }
+        });
+    </script>
 </body>
 </html> 

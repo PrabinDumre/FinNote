@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Budget Buddy</title>
+    <title>About - FinNote</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/about.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -133,7 +133,7 @@
                                     </defs>
                            
                             </svg>
-                            <h1 class="logo-text">Budget Buddy</h1>
+                            <h1 class="logo-text">FinNote</h1>
                         </div>
                     </div>
                     <p class="tagline">Your Smart Financial Companion</p>
@@ -147,7 +147,7 @@
                         <blockquote>
                             "Small steps in the right direction can turn into the most amazing journey. Manage your expenses, organize your thoughts, and take control of your future—one step at a time."
                         </blockquote>
-                        <p class="quote-author">- Budget Buddy</p>
+                        <p class="quote-author">- FinNote</p>
                     </div>
                 </div>
 
@@ -197,9 +197,127 @@
                     </div>
                 </div>
 
+                <!-- User Guide Section -->
+                <div class="user-guide-section">
+                    <h2 class="section-title">Complete User Guide</h2>
+                    <div class="guide-accordion">
+                        <!-- Dashboard Overview -->
+                        <div class="guide-item">
+                            <div class="guide-header">
+                                <h3>🧭 Dashboard Overview</h3>
+                                <span class="toggle-icon">+</span>
+                            </div>
+                            <div class="guide-content">
+                                <p>After login, you'll have access to two main features:</p>
+                                <ul>
+                                    <li>💰 Expense Management</li>
+                                    <li>📝 Notes</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Expense Management -->
+                        <div class="guide-item">
+                            <div class="guide-header">
+                                <h3>💸 Expense Management Guide</h3>
+                                <span class="toggle-icon">+</span>
+                            </div>
+                            <div class="guide-content">
+                                <div class="guide-subsection">
+                                    <h4>Section 1: Budget Overview</h4>
+                                    <ul>
+                                        <li>Set and update your monthly budget with category selection</li>
+                                        <li>View remaining balance ("Amount I Have")</li>
+                                        <li>Export your transactions to PDF</li>
+                                        <li>Dashboard shows net amount, total given, taken, and expenses</li>
+                                    </ul>
+                                </div>
+                                <div class="guide-subsection">
+                                    <h4>Section 2: Transaction Management</h4>
+                                    <ul>
+                                        <li>Quick Access form for adding Given/Taken/Other transactions</li>
+                                        <li>See summaries of latest 4 transactions for borrowers/lenders</li>
+                                        <li>View All lets you edit/delete full transaction history</li>
+                                    </ul>
+                                </div>
+                                <div class="guide-subsection">
+                                    <h4>Section 3: Financial Planning</h4>
+                                    <ul>
+                                        <li>Table shows each category's budget, expense, and status</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes Feature -->
+                        <div class="guide-item">
+                            <div class="guide-header">
+                                <h3>📝 Notes Feature</h3>
+                                <span class="toggle-icon">+</span>
+                            </div>
+                            <div class="guide-content">
+                                <ul>
+                                    <li>Click the + icon to create a note</li>
+                                    <li>Choose between text, to-do list, or image</li>
+                                    <li>Use the 3-dot menu to edit, pin, or delete</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Reminders Feature -->
+                        <div class="guide-item">
+                            <div class="guide-header">
+                                <h3>⏰ Reminders Feature</h3>
+                                <span class="toggle-icon">+</span>
+                            </div>
+                            <div class="guide-content">
+                                <ul>
+                                    <li>Create a reminder by clicking +, entering the details, and saving</li>
+                                    <li>Email notifications are sent:</li>
+                                    <ul>
+                                        <li>Immediately</li>
+                                        <li>1 day before</li>
+                                        <li>On the deadline day</li>
+                                    </ul>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="guide-item">
+                            <div class="guide-header">
+                                <h3>📊 Charts</h3>
+                                <span class="toggle-icon">+</span>
+                            </div>
+                            <div class="guide-content">
+                                <ul>
+                                    <li>Budget and expense charts are automatically generated</li>
+                                    <li>Provides visual summaries for easy tracking</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Settings -->
+                        <div class="guide-item">
+                            <div class="guide-header">
+                                <h3>⚙️ Settings Options</h3>
+                                <span class="toggle-icon">+</span>
+                            </div>
+                            <div class="guide-content">
+                                <ul>
+                                    <li>Rename username</li>
+                                    <li>Update password</li>
+                                    <li>Toggle email and push notifications</li>
+                                    <li>Logout to end session</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Why Choose Us Section -->
                 <div class="why-us-section">
-                    <h2 class="section-title">Why Choose Budget Buddy?</h2>
+                    <h2 class="section-title">Why Choose FinNote?</h2>
                     <div class="benefits-grid">
                         <div class="benefit-card">
                             <span class="benefit-icon">🔒</span>
@@ -239,5 +357,196 @@
     <script src="js/utils.js"></script>
     <script src="js/about.js"></script>
     <script src="js/navbar.js"></script>
+
+    <style>
+        /* User Guide Styles */
+        .user-guide-section {
+            padding: 40px;
+            background: #dbf3ed;
+            border-radius: 30px;
+            margin: 40px auto;
+            max-width: 1000px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            color: #050908;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .guide-accordion {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .guide-item {
+            background: #7ef3da;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(117, 255, 209, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .guide-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(117, 255, 209, 0.1);
+        }
+
+        .guide-header {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .guide-header:hover {
+            background: rgba(117, 255, 209, 0.1);
+        }
+
+        .guide-header h3 {
+            color: #030605;
+            margin: 0;
+            font-size: 1.3em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-icon {
+            color: #75FFD1;
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(117, 255, 209, 0.1);
+            border-radius: 50%;
+        }
+
+        .guide-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            background: #1a1a1a;
+        }
+
+        .guide-item.active {
+            border-color: rgba(117, 255, 209, 0.2);
+        }
+
+        .guide-item.active .guide-content {
+            padding: 30px;
+            max-height: 1000px;
+        }
+
+        .guide-item.active .toggle-icon {
+            transform: rotate(45deg);
+            background: #75FFD1;
+            color: #1a1a1a;
+        }
+
+        .guide-subsection {
+            margin-bottom: 25px;
+        }
+
+        .guide-subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-subsection h4 {
+            color: #75FFD1;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .guide-content ul {
+            list-style-type: none;
+            padding-left: 25px;
+        }
+
+        .guide-content li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 12px;
+            position: relative;
+            line-height: 1.5;
+            transition: all 0.2s ease;
+        }
+
+        .guide-content li:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-content li:before {
+            content: "→";
+            color: #75FFD1;
+            position: absolute;
+            left: -25px;
+            transition: transform 0.2s ease;
+        }
+
+        .guide-content li:hover {
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .guide-content li:hover:before {
+            transform: translateX(5px);
+        }
+
+        /* Nested lists */
+        .guide-content ul ul {
+            margin-top: 12px;
+            margin-bottom: 12px;
+            padding-left: 20px;
+        }
+
+        .guide-content ul ul li {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95em;
+        }
+
+        .guide-content ul ul li:before {
+            content: "•";
+            color: #75FFD1;
+        }
+    </style>
+
+    <script>
+        document.querySelectorAll('.guide-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                const wasActive = item.classList.contains('active');
+                
+                // Add smooth collapse animation to previously active items
+                document.querySelectorAll('.guide-item.active').forEach(activeItem => {
+                    if (activeItem !== item) {
+                        const content = activeItem.querySelector('.guide-content');
+                        content.style.maxHeight = '0';
+                        activeItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item with smooth animation
+                if (!wasActive) {
+                    item.classList.add('active');
+                    const content = item.querySelector('.guide-content');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

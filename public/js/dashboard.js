@@ -1004,7 +1004,7 @@ function showLoginNotification() {
                 }, 5000);
             } else {
                 // If no data, show a welcome message
-                notificationMessage.innerHTML = "Welcome to Budget Buddy! Start tracking your expenses to get personalized insights.";
+                notificationMessage.innerHTML = "Welcome to FinNote! Start tracking your expenses to get personalized insights.";
                 notification.className = 'login-notification show';
                 
                 // Hide the notification after 5 seconds
@@ -1019,7 +1019,7 @@ function showLoginNotification() {
 function generateSpendingNotification() {
     if (!preloadedExpenses || preloadedExpenses.length === 0) {
         return { 
-            text: "Welcome to Budget Buddy! Start tracking your expenses for personalized insights.", 
+            text: "Welcome to FinNote! Start tracking your expenses for personalized insights.", 
             type: "info" 
         };
     }
@@ -1170,7 +1170,7 @@ function generateSpendingNotification() {
     }
     
     return {
-        text: "Welcome to Budget Buddy! Start tracking your categories to get personalized insights.",
+        text: "Welcome to FinNote! Start tracking your categories to get personalized insights.",
         type: "info"
     };
 }
@@ -1182,9 +1182,9 @@ function loadUserName() {
     const usernameElement = document.getElementById('username');
     
     // Only modify if it contains the default value
-    if (usernameElement && usernameElement.textContent === 'Budget Buddy') {
+    if (usernameElement && usernameElement.textContent === 'FinNote') {
         // The server-side rendered username will be used instead
-        // If no server-side username is provided, it will keep "Budget Buddy"
+        // If no server-side username is provided, it will keep "FinNote"
         console.log("Username already set by server-side rendering");
     }
 } 

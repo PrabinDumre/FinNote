@@ -90,7 +90,7 @@ app.use((req, res, next) => {
     }
     
     if (req.session.userId) {
-        res.locals.username = req.session.username || "Budget Buddy";
+        res.locals.username = req.session.username || "FinNote";
         res.locals.isLoggedIn = true;
         
         // Only log for non-static routes
@@ -171,28 +171,26 @@ app.post("/send-otp", async (req, res) => {
         console.log('Storing OTP in database for:', email);
 
         // Configure email transporter
-        const transporter = nodemailer.createTransport({
+        const otpTransporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'budgetbuddy.org@gmail.com',
+                user: 'finnote.org@gmail.com',
                 pass: process.env.EMAIL_PASS
-            },
-            debug: true, // Enable debug logs
-            logger: true // Enable logger
+            }
         });
 
         // Verify transporter configuration
-        await transporter.verify();
+        await otpTransporter.verify();
         console.log('Transporter verified successfully'); // Debug log
 
         // Send OTP email
-        const mailOptions = {
-            from: '"BUDGET BUDDY" <budgetbuddy.org@gmail.com>',
+        const otpMailOptions = {
+            from: '"FinNote" <finnote.org@gmail.com>',
             to: email,
-            subject: 'Email Verification OTP - Budget Buddy',
+            subject: 'Email Verification OTP',
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #46997D; text-align: center;">Budget Buddy Email Verification</h2>
+                    <h2 style="color: #46997D; text-align: center;">FinNote Email Verification</h2>
                     <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
                         <p>Hello,</p>
                         <p>Your verification code is:</p>
@@ -207,7 +205,7 @@ app.post("/send-otp", async (req, res) => {
             `
         };
 
-        const info = await transporter.sendMail(mailOptions);
+        const info = await otpTransporter.sendMail(otpMailOptions);
         console.log('Email sent successfully:', info.response); // Debug log
 
         res.json({ success: true, message: "OTP sent successfully" });
@@ -367,18 +365,18 @@ app.post("/forgot-password", async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'budgetbuddy.org@gmail.com',
+                user: 'finnote.org@gmail.com',
                 pass: process.env.EMAIL_PASS
             }
         });
 
         await transporter.sendMail({
-            from: '"BUDGET BUDDY" <budgetbuddy.org@gmail.com>',
+            from: '"FinNote" <finnote.org@gmail.com>',
             to: user.email,
-            subject: 'Password Reset Request - Budget Buddy',
+            subject: 'Password Reset Link',
             html: `
                 <h1>Password Reset Request</h1>
-                <p>You requested a password reset for your Budget Buddy account.</p>
+                <p>You requested a password reset for your FinNote account.</p>
                 <p>Click the link below to reset your password. This link will expire in 1 hour.</p>
                 <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
                 <p>If you didn't request this, please ignore this email.</p>

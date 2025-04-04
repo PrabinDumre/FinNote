@@ -12,11 +12,11 @@ function generateTransactionPDF(transactions, res) {
             bufferPages: true,
             info: {
                 Title: 'Transaction History',
-                Author: 'Budget Buddy',
+                Author: 'FinNote',
                 Subject: 'Transaction Report',
                 Keywords: 'transactions, expenses, budget',
                 CreationDate: new Date(),
-                Producer: 'Budget Buddy App'
+                Producer: 'FinNote App'
             },
             pdfVersion: '1.7'
         });

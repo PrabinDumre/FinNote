@@ -5,7 +5,7 @@ const Register = require('../models/registers');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'budgetbuddy.org@gmail.com',
+        user: 'finnote.org@gmail.com',
         pass: process.env.EMAIL_PASS
     }
 });
@@ -31,12 +31,12 @@ const sendReminderEmail = async (userId, reminder) => {
 
         // Create email content
         const mailOptions = {
-            from: '"BUDGET BUDDY" <budgetbuddy.org@gmail.com>',
+            from: '"FinNote" <finnote.org@gmail.com>',
             to: user.email,
             subject: `Reminder: ${reminder.title}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #46997D; text-align: center;">Budget Buddy Reminder</h2>
+                    <h2 style="color: #46997D; text-align: center;">FinNote Reminder</h2>
                     <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
                         <h3 style="color: #333;">${reminder.title}</h3>
                         <p><strong>Type:</strong> ${reminder.type}</p>
@@ -46,7 +46,7 @@ const sendReminderEmail = async (userId, reminder) => {
                         <p><strong>Priority:</strong> ${reminder.priority}</p>
                     </div>
                     <p style="color: #666; font-size: 12px; text-align: center; margin-top: 20px;">
-                        This is an automated reminder from Budget Buddy.
+                        This is an automated reminder from FinNote.
                     </p>
                 </div>
             `

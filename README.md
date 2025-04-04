@@ -1,8 +1,8 @@
-# Budget Buddy: AI-Powered Personal Finance Manager
+# FinNote: AI-Powered Personal Finance Manager
 
 ## 🌟 Overview
 
-Budget Buddy is a comprehensive personal finance management application that helps users track expenses, manage budgets, and gain insights into their financial habits. Leveraging machine learning, this app provides personalized recommendations and predictive analytics to help users make smarter financial decisions.
+FinNote is a comprehensive personal finance management application that helps users track expenses, manage budgets, and gain insights into their financial habits. Leveraging machine learning, this application provides personalized financial insights and recommendations.
 
 ## 💰 Key Features
 
@@ -138,4 +138,4 @@ This project is licensed under the ISC License
 
 ---
 
-*Budget Buddy - Making Personal Finance Management Smarter with AI* 📊💸 
+*FinNote - Making Personal Finance Management Smarter with AI* 📊💸 
