@@ -84,8 +84,8 @@ FinNote is a comprehensive personal finance management application that helps us
 ### Installation Steps
 1. Clone the repository
    ```bash
-   git clone https://github.com/PrabinDumre/MyBudgetBuddy.git
-   cd MyBudgetBuddy
+   git clone https://github.com/PrabinDumre/Myfinnote.git
+   cd Myfinnote
    ```
 
 2. Install dependencies
